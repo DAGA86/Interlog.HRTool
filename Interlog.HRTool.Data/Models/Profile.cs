@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Interlog.HRTool.Data.Models
 {
@@ -16,6 +11,7 @@ namespace Interlog.HRTool.Data.Models
         public string Name { get; set; }
 
 
-        public ICollection<Employee>? Employees { get; set; }
+        public ICollection<Employee> Employees { get; } = new List<Employee>();
+        public ICollection<EmployeeProfile> EmployeeProfiles { get; } = new List<EmployeeProfile>();
     }
 }

@@ -1,10 +1,5 @@
 ﻿using Interlog.HRTool.Data.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Interlog.HRTool.Data.Contexts
 {
@@ -16,7 +11,7 @@ namespace Interlog.HRTool.Data.Contexts
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<Employee>().HasMany(x => x.Profiles).WithMany(x => x.Employees);
+            builder.Entity<Employee>().HasMany(x => x.Profiles).WithMany(x => x.Employees).UsingEntity<EmployeeProfile>();
 
             // for the other conventions, we do a metadata model loop
             foreach (var entityType in builder.Model.GetEntityTypes())

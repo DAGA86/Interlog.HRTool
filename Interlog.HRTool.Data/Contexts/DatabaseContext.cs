@@ -1,5 +1,6 @@
 ﻿using Interlog.HRTool.Data.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 
 namespace Interlog.HRTool.Data.Contexts
 {
@@ -7,6 +8,7 @@ namespace Interlog.HRTool.Data.Contexts
     {
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
         {
+
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -34,6 +36,18 @@ namespace Interlog.HRTool.Data.Contexts
         public DbSet<Company> Company { get; set; }
         public DbSet<Department> Department { get; set; }
         
-    } 
+    }
+
+    //TODO delete
+    public class DatabaseContextFactory : IDesignTimeDbContextFactory<DatabaseContext>
+    {
+        public DatabaseContext CreateDbContext(string[] args)
+        {
+            var optionsBuilder = new DbContextOptionsBuilder<DatabaseContext>();
+            optionsBuilder.UseSqlServer("Server=DESKTOP-KSAT8LT;Database=InterlogHRTool;User Id=sa;Password=developer;MultipleActiveResultSets=true");
+
+            return new DatabaseContext(optionsBuilder.Options);
+        }
+    }
 
 } 

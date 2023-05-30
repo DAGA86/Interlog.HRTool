@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Interlog.HRTool.Data.Contexts;
 using Interlog.HRTool.Data.Models;
+using Interlog.HRTool.WebApp.Models.Employee;
 
 namespace Interlog.HRTool.WebApp.Controllers
 {
@@ -25,6 +22,12 @@ namespace Interlog.HRTool.WebApp.Controllers
             var databaseContext = _context.Employee.Include(e => e.Department);
             return View(await databaseContext.ToListAsync());
         }
+
+        [HttpPost]
+        //public async Task<IActionResult> LoginAsync(LoginViewModel model)
+        //{
+
+        //}
 
         // GET: Employees/Details/5
         public async Task<IActionResult> Details(int? id)

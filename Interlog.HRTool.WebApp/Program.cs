@@ -19,8 +19,8 @@ namespace Interlog.HRTool.WebApp
             }
             ).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, (options) =>
             {
-                options.LoginPath = "/Employee/Login";
-                options.LogoutPath = "/Employee/Logout";
+                options.LoginPath = "/Employees/Login";
+                options.LogoutPath = "/Employees/Logout";
                 options.ExpireTimeSpan = TimeSpan.FromHours(8);
             }
             );

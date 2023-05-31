@@ -13,17 +13,17 @@ namespace Interlog.HRTool.Data.Providers
 
         public List<Company> GetAll()
         {
-            return _dbContext.Company.ToList();
+            return _dbContext.Companies.ToList();
         }
 
         public Company? GetById(int id)
         {
-            return _dbContext.Company.FirstOrDefault(x => x.Id == id);
+            return _dbContext.Companies.FirstOrDefault(x => x.Id == id);
         }
         // ??admin??
         public Company? Create(Company entity)
         {
-            _dbContext.Company.Add(entity);
+            _dbContext.Companies.Add(entity);
             _dbContext.SaveChanges();
             return entity;
         }
@@ -31,10 +31,10 @@ namespace Interlog.HRTool.Data.Providers
         //?????
         public bool Delete(int id)
         {
-            Models.Company? deleteCompany = _dbContext.Company.FirstOrDefault(x => x.Id == id);
+            Models.Company? deleteCompany = _dbContext.Companies.FirstOrDefault(x => x.Id == id);
             if (deleteCompany != null)
             {
-                _dbContext.Company.Remove(deleteCompany);
+                _dbContext.Companies.Remove(deleteCompany);
                 _dbContext.SaveChanges();
                 return true;
             }
@@ -44,7 +44,7 @@ namespace Interlog.HRTool.Data.Providers
 
         public Company? Update(Company entity)
         {
-            Models.Company? updateCompany = _dbContext.Company.FirstOrDefault(x => x.Id == entity.Id);
+            Models.Company? updateCompany = _dbContext.Companies.FirstOrDefault(x => x.Id == entity.Id);
             if (updateCompany != null)
             {
                 updateCompany.Name = entity.Name;

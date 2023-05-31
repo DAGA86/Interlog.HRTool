@@ -2,9 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using Interlog.HRTool.Data.Contexts;
 using Interlog.HRTool.Data.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Interlog.HRTool.WebApp.Controllers
 {
+    [Authorize]
     public class CompaniesController : Controller
     {
         private readonly DatabaseContext _context;
@@ -17,20 +19,20 @@ namespace Interlog.HRTool.WebApp.Controllers
         // GET: Companies
         public async Task<IActionResult> Index()
         {
-              return _context.Company != null ? 
-                          View(await _context.Company.ToListAsync()) :
+              return _context.Companies != null ? 
+                          View(await _context.Companies.ToListAsync()) :
                           Problem("Entity set 'DatabaseContext.Company'  is null.");
         }
 
         // GET: Companies/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Company == null)
+            if (id == null || _context.Companies == null)
             {
                 return NotFound();
             }
 
-            var company = await _context.Company
+            var company = await _context.Companies
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (company == null)
             {
@@ -65,12 +67,12 @@ namespace Interlog.HRTool.WebApp.Controllers
         // GET: Companies/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Company == null)
+            if (id == null || _context.Companies == null)
             {
                 return NotFound();
             }
 
-            var company = await _context.Company.FindAsync(id);
+            var company = await _context.Companies.FindAsync(id);
             if (company == null)
             {
                 return NotFound();
@@ -116,12 +118,12 @@ namespace Interlog.HRTool.WebApp.Controllers
         // GET: Companies/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Company == null)
+            if (id == null || _context.Companies == null)
             {
                 return NotFound();
             }
 
-            var company = await _context.Company
+            var company = await _context.Companies
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (company == null)
             {
@@ -136,14 +138,14 @@ namespace Interlog.HRTool.WebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Company == null)
+            if (_context.Companies == null)
             {
                 return Problem("Entity set 'DatabaseContext.Company'  is null.");
             }
-            var company = await _context.Company.FindAsync(id);
+            var company = await _context.Companies.FindAsync(id);
             if (company != null)
             {
-                _context.Company.Remove(company);
+                _context.Companies.Remove(company);
             }
             
             await _context.SaveChangesAsync();
@@ -152,7 +154,7 @@ namespace Interlog.HRTool.WebApp.Controllers
 
         private bool CompanyExists(int id)
         {
-          return (_context.Company?.Any(e => e.Id == id)).GetValueOrDefault();
+          return (_context.Companies?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

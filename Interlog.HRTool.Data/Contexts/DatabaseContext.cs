@@ -31,10 +31,11 @@ namespace Interlog.HRTool.Data.Contexts
             base.OnModelCreating(builder);
         }
 
-        public DbSet<Profile> Profile { get; set; }
-        public DbSet<Employee> Employee { get; set; }
-        public DbSet<Company> Company { get; set; }
-        public DbSet<Department> Department { get; set; }
+        public DbSet<Profile> Profiles { get; set; }
+        public DbSet<Employee> Employees { get; set; }
+        public DbSet<EmployeeProfile> EmployeeProfiles { get; set; }
+        public DbSet<Company> Companies { get; set; }
+        public DbSet<Department> Departments { get; set; }
         
     }
 

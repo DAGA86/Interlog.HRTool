@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using Interlog.HRTool.Data.Providers;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace Interlog.HRTool.WebApp.Controllers
 {
@@ -16,25 +18,29 @@ namespace Interlog.HRTool.WebApp.Controllers
     {
         private readonly DatabaseContext _context;
         private EmployeeProvider _employeeProvider;
+        private DepartmentProvider _departmentProvider;
+        private ProfileProvider _profileProvider;
 
         public EmployeesController(DatabaseContext context)
         {
             _context = context;
             _employeeProvider = new EmployeeProvider(context);
+            _departmentProvider = new DepartmentProvider(context);
+            _profileProvider = new ProfileProvider(context);
 
         }
 
         // GET: Employees
+        [Authorize]
         public async Task<IActionResult> Index()
         {
-            var databaseContext = _context.Employee.Include(e => e.Department);
+            var databaseContext = _context.Employees.Include(e => e.Department);
             return View(await databaseContext.ToListAsync());
         }
 
-        // GET
-        public Employee? GetByUsername(string username)
+        public ActionResult Login()
         {
-            return _employeeProvider.GetByUsername(username);
+            return View();
         }
 
         [HttpPost]
@@ -108,36 +114,28 @@ namespace Interlog.HRTool.WebApp.Controllers
             return View(model);
         }
 
-
-        // GET: Employees/Details/5
-        public async Task<IActionResult> Details(int? id)
+        [Authorize]
+        public async Task<IActionResult> LogoutAsync()
         {
-            if (id == null || _context.Employee == null)
-            {
-                return NotFound();
-            }
+            await this.HttpContext.SignOutAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme);
 
-            var employee = await _context.Employee
-                .Include(e => e.Department)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (employee == null)
-            {
-                return NotFound();
-            }
-
-            return View(employee);
+            return RedirectPermanent("~/Home/Index");
         }
 
+
         // GET: Employees/Create
+        [Authorize]
         public IActionResult Create()
         {
-            ViewData["DepartmentId"] = new SelectList(_context.Department, "Id", "Name");
+            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name");
             return View();
         }
 
         // POST: Employees/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,UserName,Email,Password,DepartmentId")] Employee employee)
@@ -148,25 +146,23 @@ namespace Interlog.HRTool.WebApp.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DepartmentId"] = new SelectList(_context.Department, "Id", "Name", employee.DepartmentId);
+            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", employee.DepartmentId);
             return View(employee);
         }
 
         // GET: Employees/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        [Authorize]
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null || _context.Employee == null)
-            {
-                return NotFound();
-            }
-
-            var employee = await _context.Employee.FindAsync(id);
+            Employee employee = _employeeProvider.GetById(id);
             if (employee == null)
             {
                 return NotFound();
             }
-            ViewData["DepartmentId"] = new SelectList(_context.Department, "Id", "Name", employee.DepartmentId);
-            return View(employee);
+            EmployeeViewModel model = new EmployeeViewModel(employee.Id, employee.FirstName, employee.LastName, employee.DepartmentId);
+            ViewData[nameof(EmployeeViewModel.DepartmentId)] = new SelectList(_departmentProvider.GetAll(), nameof(Data.Models.Department.Id), nameof(Data.Models.Department.Name), employee.DepartmentId);
+            ViewData[nameof(EmployeeViewModel.ProfileIds)] = new MultiSelectList(_profileProvider.GetAll(), nameof(Data.Models.Profile.Id), nameof(Data.Models.Profile.Name), employee.Profiles.Select(x => x.Id));
+            return View(model);
         }
 
         // POST: Employees/Edit/5
@@ -174,9 +170,10 @@ namespace Interlog.HRTool.WebApp.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,UserName,Email,Password,DepartmentId")] Employee employee)
+        [Authorize]
+        public async Task<IActionResult> Edit(int id, EmployeeViewModel model)
         {
-            if (id != employee.Id)
+            if (id != model.Id)
             {
                 return NotFound();
             }
@@ -185,12 +182,20 @@ namespace Interlog.HRTool.WebApp.Controllers
             {
                 try
                 {
-                    _context.Update(employee);
-                    await _context.SaveChangesAsync();
+                    Employee employee = _employeeProvider.GetById(id);
+                    if (employee == null)
+                    {
+                        return NotFound();
+                    }
+                    employee.DepartmentId = model.DepartmentId;
+                    _employeeProvider.Update(employee);
+                    _employeeProvider.UpdateProfiles(model.Id, model.ProfileIds);
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!EmployeeExists(employee.Id))
+
+                    if (!EmployeeExists(model.Id))
                     {
                         return NotFound();
                     }
@@ -201,51 +206,15 @@ namespace Interlog.HRTool.WebApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DepartmentId"] = new SelectList(_context.Department, "Id", "Name", employee.DepartmentId);
-            return View(employee);
+            ViewData[nameof(EmployeeViewModel.DepartmentId)] = new SelectList(_departmentProvider.GetAll(), nameof(Data.Models.Department.Id), nameof(Data.Models.Department.Name), model.DepartmentId);
+            ViewData[nameof(EmployeeViewModel.ProfileIds)] = new MultiSelectList(_profileProvider.GetAll(), nameof(Data.Models.Profile.Id), nameof(Data.Models.Profile.Name), model.ProfileIds);
+            return View(model);
         }
 
-        // GET: Employees/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public bool EmployeeExists(int id)
         {
-            if (id == null || _context.Employee == null)
-            {
-                return NotFound();
-            }
-
-            var employee = await _context.Employee
-                .Include(e => e.Department)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (employee == null)
-            {
-                return NotFound();
-            }
-
-            return View(employee);
+            return (_context.Employees?.Any(e => e.Id == id)).GetValueOrDefault();
         }
 
-        // POST: Employees/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Employee == null)
-            {
-                return Problem("Entity set 'DatabaseContext.Employee'  is null.");
-            }
-            var employee = await _context.Employee.FindAsync(id);
-            if (employee != null)
-            {
-                _context.Employee.Remove(employee);
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool EmployeeExists(int id)
-        {
-            return (_context.Employee?.Any(e => e.Id == id)).GetValueOrDefault();
-        }
     }
 }

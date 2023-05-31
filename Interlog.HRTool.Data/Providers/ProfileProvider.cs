@@ -19,27 +19,27 @@ namespace Interlog.HRTool.Data.Providers
 
         public List<Profile> GetAll()
         {
-            return _dbContext.Profile.ToList();
+            return _dbContext.Profiles.ToList();
         }
 
         public Profile? GetById(int id)
         {
-            return _dbContext.Profile.FirstOrDefault(x => x.Id == id);
+            return _dbContext.Profiles.FirstOrDefault(x => x.Id == id);
         }
 
         public Profile? Create(Profile entity)
         {
-            _dbContext.Profile.Add(entity);
+            _dbContext.Profiles.Add(entity);
             _dbContext.SaveChanges();
             return entity;
         }
 
         public bool Delete(int id)
         {
-            Models.Profile deleteProfile = _dbContext.Profile.FirstOrDefault(x => x.Id == id);
+            Models.Profile deleteProfile = _dbContext.Profiles.FirstOrDefault(x => x.Id == id);
             if (deleteProfile != null)
             {
-                _dbContext.Profile.Remove(deleteProfile);
+                _dbContext.Profiles.Remove(deleteProfile);
                 _dbContext.SaveChanges();
                 return true;
             }
@@ -48,7 +48,7 @@ namespace Interlog.HRTool.Data.Providers
 
         public Profile? Update(Profile entity)
         {
-            Models.Profile? updateProfile = _dbContext.Profile.FirstOrDefault(x => x.Id == entity.Id);
+            Models.Profile? updateProfile = _dbContext.Profiles.FirstOrDefault(x => x.Id == entity.Id);
 
             if (updateProfile != null)
             {

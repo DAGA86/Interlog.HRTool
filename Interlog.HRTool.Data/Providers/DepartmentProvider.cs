@@ -13,27 +13,27 @@ namespace Interlog.HRTool.Data.Providers
 
         public List<Department> GetAll()
         {
-            return _dbContext.Department.ToList();
+            return _dbContext.Departments.ToList();
         }
 
         public Department? GetById(int id)
         {
-            return _dbContext.Department.FirstOrDefault(x => x.Id == id);
+            return _dbContext.Departments.FirstOrDefault(x => x.Id == id);
         }
 
         public Department? Create(Department entity)
         {
-            _dbContext.Department.Add(entity);
+            _dbContext.Departments.Add(entity);
             _dbContext.SaveChanges();
             return entity;
         }
 
         public bool Delete(int id)
         {
-            Models.Department deleteDepartment = _dbContext.Department.FirstOrDefault(x => x.Id == id);
+            Models.Department deleteDepartment = _dbContext.Departments.FirstOrDefault(x => x.Id == id);
             if (deleteDepartment != null)
             {
-                _dbContext.Department.Remove(deleteDepartment);
+                _dbContext.Departments.Remove(deleteDepartment);
                 _dbContext.SaveChanges();
                 return true;
             }
@@ -42,7 +42,7 @@ namespace Interlog.HRTool.Data.Providers
 
         public Department? Update(Department entity)
         {
-            Models.Department? updateDepartment = _dbContext.Department.FirstOrDefault(x => x.Id == entity.Id);
+            Models.Department? updateDepartment = _dbContext.Departments.FirstOrDefault(x => x.Id == entity.Id);
 
             if (updateDepartment != null)
             {

@@ -2,9 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using Interlog.HRTool.Data.Contexts;
 using Interlog.HRTool.Data.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Interlog.HRTool.WebApp.Controllers
 {
+    [Authorize]
     public class ProfilesController : Controller
     {
         private readonly DatabaseContext _context;
@@ -17,20 +19,20 @@ namespace Interlog.HRTool.WebApp.Controllers
         // GET: Profiles
         public async Task<IActionResult> Index()
         {
-              return _context.Profile != null ? 
-                          View(await _context.Profile.ToListAsync()) :
+              return _context.Profiles != null ? 
+                          View(await _context.Profiles.ToListAsync()) :
                           Problem("Entity set 'DatabaseContext.Profile'  is null.");
         }
 
         // GET: Profiles/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Profile == null)
+            if (id == null || _context.Profiles == null)
             {
                 return NotFound();
             }
 
-            var profile = await _context.Profile
+            var profile = await _context.Profiles
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (profile == null)
             {
@@ -65,12 +67,12 @@ namespace Interlog.HRTool.WebApp.Controllers
         // GET: Profiles/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Profile == null)
+            if (id == null || _context.Profiles == null)
             {
                 return NotFound();
             }
 
-            var profile = await _context.Profile.FindAsync(id);
+            var profile = await _context.Profiles.FindAsync(id);
             if (profile == null)
             {
                 return NotFound();
@@ -116,12 +118,12 @@ namespace Interlog.HRTool.WebApp.Controllers
         // GET: Profiles/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Profile == null)
+            if (id == null || _context.Profiles == null)
             {
                 return NotFound();
             }
 
-            var profile = await _context.Profile
+            var profile = await _context.Profiles
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (profile == null)
             {
@@ -136,14 +138,14 @@ namespace Interlog.HRTool.WebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Profile == null)
+            if (_context.Profiles == null)
             {
                 return Problem("Entity set 'DatabaseContext.Profile'  is null.");
             }
-            var profile = await _context.Profile.FindAsync(id);
+            var profile = await _context.Profiles.FindAsync(id);
             if (profile != null)
             {
-                _context.Profile.Remove(profile);
+                _context.Profiles.Remove(profile);
             }
             
             await _context.SaveChangesAsync();
@@ -152,7 +154,7 @@ namespace Interlog.HRTool.WebApp.Controllers
 
         private bool ProfileExists(int id)
         {
-          return (_context.Profile?.Any(e => e.Id == id)).GetValueOrDefault();
+          return (_context.Profiles?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

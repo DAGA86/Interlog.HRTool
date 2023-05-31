@@ -11,11 +11,12 @@ namespace Interlog.HRTool.Data.Models
         [StringLength(32)]
         public string LastName { get; set; }
         [StringLength(64)]
-        public string UserName { get; set; }
+        public string Username { get; set; }
         [StringLength(320)]
         public string Email { get; set; }
         [StringLength(128)]
         public string Password { get; set; }
+        public bool IsActive { get; set; }
 
         public int DepartmentId { get; set; }
 

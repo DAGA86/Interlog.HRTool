@@ -21,6 +21,11 @@ namespace Interlog.HRTool.Data.Providers
             return _dbContext.Employee.FirstOrDefault(x => x.Id == id);
         }
 
+        public Employee? GetByUsername(string username)
+        {
+            return _dbContext.Employee.FirstOrDefault(x => x.Username == username);
+        }
+
         public Employee? Create(Employee entity)
         {
             _dbContext.Employee.Add(entity);
@@ -48,7 +53,7 @@ namespace Interlog.HRTool.Data.Providers
             {
                 updateEmployee.FirstName = entity.FirstName; 
                 updateEmployee.LastName = entity.LastName;
-                updateEmployee.UserName = entity.UserName;
+                updateEmployee.Username = entity.Username;
                 updateEmployee.Password = entity.Password;
                 // updateEmployee.Department = entity.Department; // updateEmployee.DepartmentId = entity.DepartmentId;
 

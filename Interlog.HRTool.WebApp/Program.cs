@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -9,6 +10,21 @@ namespace Interlog.HRTool.WebApp
         {
 
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultSignOutScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            }
+            ).AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, (options) =>
+            {
+                options.LoginPath = "/Employee/Login";
+                options.LogoutPath = "/Employee/Logout";
+                options.ExpireTimeSpan = TimeSpan.FromHours(8);
+            }
+            );
+
 
             // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
@@ -32,6 +48,7 @@ namespace Interlog.HRTool.WebApp
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(

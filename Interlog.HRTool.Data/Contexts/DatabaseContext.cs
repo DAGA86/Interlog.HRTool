@@ -38,16 +38,4 @@ namespace Interlog.HRTool.Data.Contexts
         
     }
 
-    //TODO delete
-    public class DatabaseContextFactory : IDesignTimeDbContextFactory<DatabaseContext>
-    {
-        public DatabaseContext CreateDbContext(string[] args)
-        {
-            var optionsBuilder = new DbContextOptionsBuilder<DatabaseContext>();
-            optionsBuilder.UseSqlServer("Server=DESKTOP-KSAT8LT;Database=InterlogHRTool;User Id=sa;Password=developer;MultipleActiveResultSets=true");
-
-            return new DatabaseContext(optionsBuilder.Options);
-        }
-    }
-
 } 

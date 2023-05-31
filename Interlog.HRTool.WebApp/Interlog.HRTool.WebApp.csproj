@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Interlog.HRTool.Data\Interlog.HRTool.Data.csproj" />
+    <ProjectReference Include="..\Interlog.HRTool.Shared\Interlog.HRTool.Shared.csproj" />
   </ItemGroup>
 
 </Project>

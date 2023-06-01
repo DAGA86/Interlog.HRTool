@@ -4,94 +4,78 @@ using Microsoft.EntityFrameworkCore;
 using Interlog.HRTool.Data.Contexts;
 using Interlog.HRTool.Data.Models;
 using Microsoft.AspNetCore.Authorization;
+using Interlog.HRTool.Data.Providers;
+using Interlog.HRTool.WebApp.Models.Employee;
+using Interlog.HRTool.WebApp.Models.Department;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Interlog.HRTool.WebApp.Controllers
 {
     [Authorize]
-    public class DepartmentsController : Controller
+    public class DepartmentsController : BaseController
     {
-        private readonly DatabaseContext _context;
+        private DepartmentProvider _departmentProvider;
+        private CompanyProvider _companyProvider;
+        private EmployeeProvider _employeeProvider;
 
-        public DepartmentsController(DatabaseContext context)
+        public DepartmentsController(DatabaseContext context) : base(context)
         {
-            _context = context;
+            _departmentProvider = new DepartmentProvider(context);
+            _companyProvider = new CompanyProvider(context);
+            _employeeProvider = new EmployeeProvider(context);
+
         }
 
-        // GET: Departments
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var databaseContext = _context.Departments.Include(d => d.Company);
-            return View(await databaseContext.ToListAsync());
+            return View(_departmentProvider.GetAll());
         }
 
-        // GET: Departments/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.Departments == null)
-            {
-                return NotFound();
-            }
-
-            var department = await _context.Departments
-                .Include(d => d.Company)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (department == null)
-            {
-                return NotFound();
-            }
-
-            return View(department);
-        }
-
-        // GET: Departments/Create
+        
+        [HttpGet]
         public IActionResult Create()
         {
-            ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Name");
+            ViewData["CompanyId"] = new SelectList(_companyProvider.GetAll(), nameof(Data.Models.Company.Id), nameof(Data.Models.Company.Name));
             return View();
         }
 
-        // POST: Departments/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,CompanyId")] Department department)
+        public async Task<IActionResult> Create(DepartmentViewModel model)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(department);
-                await _context.SaveChangesAsync();
+                Department department = new Department()
+                {
+                    Name = model.Name,
+                    CompanyId = model.CompanyId
+                };
+                _departmentProvider.Create(department);
+                
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Name", department.CompanyId);
-            return View(department);
+            ViewData[nameof(DepartmentViewModel.CompanyId)] = new SelectList(_companyProvider.GetAll(), nameof(Data.Models.Company.Id), nameof(Data.Models.Company.Name), model.CompanyId);
+            return View(model);
         }
 
-        // GET: Departments/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null || _context.Departments == null)
-            {
-                return NotFound();
-            }
-
-            var department = await _context.Departments.FindAsync(id);
+            Department department = _departmentProvider.GetById(id);
             if (department == null)
             {
                 return NotFound();
-            }
-            ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Name", department.CompanyId);
+            }            
+            ViewData[nameof(DepartmentViewModel.CompanyId)] = new SelectList(_companyProvider.GetAll(), nameof(Data.Models.Company.Id), nameof(Data.Models.Company.Name), department.CompanyId);
             return View(department);
         }
 
-        // POST: Departments/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,CompanyId")] Department department)
+        public async Task<IActionResult> Edit(int id, DepartmentViewModel model)
         {
-            if (id != department.Id)
+            if (id != model.Id)
             {
                 return NotFound();
             }
@@ -100,12 +84,20 @@ namespace Interlog.HRTool.WebApp.Controllers
             {
                 try
                 {
-                    _context.Update(department);
-                    await _context.SaveChangesAsync();
+                    Department department = _departmentProvider.GetById(id);
+
+                    if (department == null)
+                    {
+                        return NotFound();
+                    }
+                    department.CompanyId = model.CompanyId;
+                    department.Name = model.Name;
+                    _departmentProvider.Update(department);
+                                        
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DepartmentExists(department.Id))
+                    if (!_departmentProvider.DepartmentExists(model.Id))
                     {
                         return NotFound();
                     }
@@ -116,51 +108,48 @@ namespace Interlog.HRTool.WebApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CompanyId"] = new SelectList(_context.Companies, "Id", "Name", department.CompanyId);
-            return View(department);
+            ViewData[nameof(DepartmentViewModel.CompanyId)] = new SelectList(_companyProvider.GetAll(), nameof(Data.Models.Company.Id), nameof(Data.Models.Company.Name), model.CompanyId);
+            return View(model);
         }
 
-        // GET: Departments/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null || _context.Departments == null)
-            {
-                return NotFound();
-            }
+        //[HttpGet]
+        //public async Task<IActionResult> Delete(int? id)
+        //{
+        //    if (id == null || _context.Departments == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var department = await _context.Departments
-                .Include(d => d.Company)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (department == null)
-            {
-                return NotFound();
-            }
+        //    var department = await _context.Departments
+        //        .Include(d => d.Company)
+        //        .FirstOrDefaultAsync(m => m.Id == id);
+        //    if (department == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return View(department);
-        }
+        //    return View(department);
+        //}
 
-        // POST: Departments/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Departments == null)
-            {
-                return Problem("Entity set 'DatabaseContext.Department'  is null.");
-            }
-            var department = await _context.Departments.FindAsync(id);
-            if (department != null)
-            {
-                _context.Departments.Remove(department);
-            }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+        
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteConfirmed(int id)
+        //{
+        //    if (_context.Departments == null)
+        //    {
+        //        return Problem("Entity set 'DatabaseContext.Department'  is null.");
+        //    }
+        //    var department = await _context.Departments.FindAsync(id);
+        //    if (department != null)
+        //    {
+        //        _context.Departments.Remove(department);
+        //    }
 
-        private bool DepartmentExists(int id)
-        {
-          return (_context.Departments?.Any(e => e.Id == id)).GetValueOrDefault();
-        }
+        //    await _context.SaveChangesAsync();
+        //    return RedirectToAction(nameof(Index));
+        //}
+
+        
     }
 }

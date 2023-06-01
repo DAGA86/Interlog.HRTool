@@ -1,4 +1,5 @@
 ﻿using Interlog.HRTool.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Interlog.HRTool.Data.Providers
 {
@@ -13,7 +14,7 @@ namespace Interlog.HRTool.Data.Providers
 
         public List<Department> GetAll()
         {
-            return _dbContext.Departments.ToList();
+            return _dbContext.Departments.Include(x => x.Company).ToList();
         }
 
         public Department? GetById(int id)
@@ -46,13 +47,18 @@ namespace Interlog.HRTool.Data.Providers
 
             if (updateDepartment != null)
             {
-                updateDepartment.Name = entity.Name;            
+                updateDepartment.Name = entity.Name;  
+                updateDepartment.CompanyId = entity.CompanyId;
                
                 _dbContext.SaveChanges();
             }
 
             return updateDepartment;
 
+        }
+        public bool DepartmentExists(int id)
+        {
+            return (_dbContext.Departments?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

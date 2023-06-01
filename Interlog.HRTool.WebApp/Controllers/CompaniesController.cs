@@ -9,23 +9,19 @@ using Interlog.HRTool.Data.Providers;
 namespace Interlog.HRTool.WebApp.Controllers
 {
     [Authorize]
-    public class CompaniesController : Controller
+    public class CompaniesController : BaseController
     {
-        private readonly DatabaseContext _context;
         private CompanyProvider _companyProvider;
 
-        public CompaniesController(DatabaseContext context)
+        public CompaniesController(DatabaseContext context) : base(context)
         {
-            _context = context;
             _companyProvider = new CompanyProvider(context);
         }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-              return _context.Companies != null ? 
-                          View(await _context.Companies.ToListAsync()) :
-                          Problem("Entity set 'DatabaseContext.Company'  is null.");
+              return View(_companyProvider.GetAll());
         }
 
         [HttpGet]

@@ -14,28 +14,24 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Interlog.HRTool.WebApp.Controllers
 {
-    public class EmployeesController : Controller
+    public class EmployeesController : BaseController
     {
-        private readonly DatabaseContext _context;
         private EmployeeProvider _employeeProvider;
         private DepartmentProvider _departmentProvider;
         private ProfileProvider _profileProvider;
 
-        public EmployeesController(DatabaseContext context)
+        public EmployeesController(DatabaseContext context) : base(context)
         {
-            _context = context;
             _employeeProvider = new EmployeeProvider(context);
             _departmentProvider = new DepartmentProvider(context);
             _profileProvider = new ProfileProvider(context);
-
         }
 
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var databaseContext = _context.Employees.Include(e => e.Department);
-            return View(await databaseContext.ToListAsync());
+            return View(_employeeProvider.GetAll());
         }
 
         public ActionResult Login()

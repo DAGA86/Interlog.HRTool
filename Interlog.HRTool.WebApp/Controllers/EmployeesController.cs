@@ -30,8 +30,8 @@ namespace Interlog.HRTool.WebApp.Controllers
 
         }
 
-        // GET: Employees
         [Authorize]
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var databaseContext = _context.Employees.Include(e => e.Department);
@@ -123,35 +123,8 @@ namespace Interlog.HRTool.WebApp.Controllers
             return RedirectPermanent("~/Home/Index");
         }
 
-
-        // GET: Employees/Create
         [Authorize]
-        public IActionResult Create()
-        {
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name");
-            return View();
-        }
-
-        // POST: Employees/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [Authorize]
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,UserName,Email,Password,DepartmentId")] Employee employee)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(employee);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["DepartmentId"] = new SelectList(_context.Departments, "Id", "Name", employee.DepartmentId);
-            return View(employee);
-        }
-
-        // GET: Employees/Edit/5
-        [Authorize]
+        [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
             Employee employee = _employeeProvider.GetById(id);
@@ -165,9 +138,6 @@ namespace Interlog.HRTool.WebApp.Controllers
             return View(model);
         }
 
-        // POST: Employees/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
@@ -195,7 +165,7 @@ namespace Interlog.HRTool.WebApp.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
 
-                    if (!EmployeeExists(model.Id))
+                    if (!_employeeProvider.EmployeeExists(model.Id))
                     {
                         return NotFound();
                     }
@@ -210,11 +180,5 @@ namespace Interlog.HRTool.WebApp.Controllers
             ViewData[nameof(EmployeeViewModel.ProfileIds)] = new MultiSelectList(_profileProvider.GetAll(), nameof(Data.Models.Profile.Id), nameof(Data.Models.Profile.Name), model.ProfileIds);
             return View(model);
         }
-
-        public bool EmployeeExists(int id)
-        {
-            return (_context.Employees?.Any(e => e.Id == id)).GetValueOrDefault();
-        }
-
     }
 }

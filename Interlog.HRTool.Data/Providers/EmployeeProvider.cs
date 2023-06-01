@@ -42,6 +42,9 @@ namespace Interlog.HRTool.Data.Providers
 
             if (updateEmployee != null)
             {
+                updateEmployee.FirstName = entity.FirstName;
+                updateEmployee.LastName = entity.LastName;
+                updateEmployee.Email = entity.Email;
                 updateEmployee.DepartmentId = entity.DepartmentId;
 
                 _dbContext.SaveChanges();
@@ -73,9 +76,9 @@ namespace Interlog.HRTool.Data.Providers
             return updateEmployee;
         }
 
-        //public bool EmployeeExists(int id)
-        //{
-        //    return (_dbContext.Employees?.Any(e => e.Id == id)).GetValueOrDefault();
-        //}
+        public bool EmployeeExists(int id)
+        {
+            return (_dbContext.Employees?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
     }
 }

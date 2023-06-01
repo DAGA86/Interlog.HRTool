@@ -5,11 +5,11 @@ namespace Interlog.HRTool.WebApp.Models.Employee
 {
     public class LoginViewModel
     {
-        [Required(ErrorMessage = "Please Enter Username")]
+        [Required(ErrorMessage = "Please enter Username")]
         [MaxLength(320)]
         public string Username { get; set; }
 
-        [Required(ErrorMessage = "Insira uma senha")]
+        [Required(ErrorMessage = "Please enter a Password")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
     }

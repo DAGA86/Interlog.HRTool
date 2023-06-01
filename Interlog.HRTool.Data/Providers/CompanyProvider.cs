@@ -1,4 +1,5 @@
 ﻿using Interlog.HRTool.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Interlog.HRTool.Data.Providers
 {
@@ -31,15 +32,15 @@ namespace Interlog.HRTool.Data.Providers
         //?????
         public bool Delete(int id)
         {
-            Models.Company? deleteCompany = _dbContext.Companies.FirstOrDefault(x => x.Id == id);
-            if (deleteCompany != null)
+            Models.Company? deleteCompany = _dbContext.Companies.Include(x => x.Departments).FirstOrDefault(x => x.Id == id);
+            if (deleteCompany == null || deleteCompany.Departments.Any())
             {
-                _dbContext.Companies.Remove(deleteCompany);
-                _dbContext.SaveChanges();
-                return true;
+                return false;
             }
 
-            return false;
+            _dbContext.Companies.Remove(deleteCompany);
+            _dbContext.SaveChanges();
+            return true;
         }
 
         public Company? Update(Company entity)
@@ -52,6 +53,11 @@ namespace Interlog.HRTool.Data.Providers
             }
 
             return updateCompany;
+        }
+
+        public bool CompanyExists(int id)
+        {
+            return (_dbContext.Companies?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

@@ -11,6 +11,6 @@ namespace Interlog.HRTool.Data.Models
         public string Name { get; set; }
 
 
-        public ICollection<Department>? Departments { get; set; }
+        public ICollection<Department> Departments { get; set; } = new List<Department>();
     }
 }

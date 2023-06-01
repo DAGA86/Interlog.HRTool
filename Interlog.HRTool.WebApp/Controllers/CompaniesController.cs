@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Interlog.HRTool.Data.Contexts;
 using Interlog.HRTool.Data.Models;
 using Microsoft.AspNetCore.Authorization;
+using Interlog.HRTool.WebApp.Models.Company;
+using Interlog.HRTool.Data.Providers;
 
 namespace Interlog.HRTool.WebApp.Controllers
 {
@@ -10,13 +12,15 @@ namespace Interlog.HRTool.WebApp.Controllers
     public class CompaniesController : Controller
     {
         private readonly DatabaseContext _context;
+        private CompanyProvider _companyProvider;
 
         public CompaniesController(DatabaseContext context)
         {
             _context = context;
+            _companyProvider = new CompanyProvider(context);
         }
 
-        // GET: Companies
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
               return _context.Companies != null ? 
@@ -24,55 +28,33 @@ namespace Interlog.HRTool.WebApp.Controllers
                           Problem("Entity set 'DatabaseContext.Company'  is null.");
         }
 
-        // GET: Companies/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.Companies == null)
-            {
-                return NotFound();
-            }
-
-            var company = await _context.Companies
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (company == null)
-            {
-                return NotFound();
-            }
-
-            return View(company);
-        }
-
-        // GET: Companies/Create
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Companies/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Company company)
+        public async Task<IActionResult> Create(CompanyViewModel company)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(company);
-                await _context.SaveChangesAsync();
+                Company newCompany = new Company()
+                {
+                    Name = company.Name,
+                };
+
+                _companyProvider.Create(newCompany);
                 return RedirectToAction(nameof(Index));
             }
             return View(company);
         }
 
-        // GET: Companies/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null || _context.Companies == null)
-            {
-                return NotFound();
-            }
-
-            var company = await _context.Companies.FindAsync(id);
+            Company company = _companyProvider.GetById(id);
             if (company == null)
             {
                 return NotFound();
@@ -80,28 +62,31 @@ namespace Interlog.HRTool.WebApp.Controllers
             return View(company);
         }
 
-        // POST: Companies/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Company company)
+        public async Task<IActionResult> Edit(int id, CompanyViewModel model)
         {
-            if (id != company.Id)
+            if (id != model.Id)
             {
                 return NotFound();
             }
+
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(company);
-                    await _context.SaveChangesAsync();
+                    Company company = _companyProvider.GetById(id);
+                    if (company == null)
+                    {
+                        return NotFound();
+                    }
+                    company.Name = model.Name;
+                    _companyProvider.Update(company);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CompanyExists(company.Id))
+                    if (!_companyProvider.CompanyExists(model.Id))
                     {
                         return NotFound();
                     }
@@ -112,19 +97,14 @@ namespace Interlog.HRTool.WebApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(company);
+            return View(model);
         }
 
-        // GET: Companies/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null || _context.Companies == null)
-            {
-                return NotFound();
-            }
+            Company company = _companyProvider.GetById(id);
 
-            var company = await _context.Companies
-                .FirstOrDefaultAsync(m => m.Id == id);
             if (company == null)
             {
                 return NotFound();
@@ -133,28 +113,20 @@ namespace Interlog.HRTool.WebApp.Controllers
             return View(company);
         }
 
-        // POST: Companies/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Companies == null)
+            if(!_companyProvider.Delete(id))
             {
-                return Problem("Entity set 'DatabaseContext.Company'  is null.");
+                TempData["Error"] = "Não é possivel apagar a empresa";
             }
-            var company = await _context.Companies.FindAsync(id);
-            if (company != null)
+            else
             {
-                _context.Companies.Remove(company);
+                TempData["Success"] = "Empresa apagada com sucesso";
             }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
 
-        private bool CompanyExists(int id)
-        {
-          return (_context.Companies?.Any(e => e.Id == id)).GetValueOrDefault();
+            return RedirectToAction(nameof(Index));
         }
     }
 }

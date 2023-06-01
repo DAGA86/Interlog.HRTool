@@ -34,30 +34,36 @@ namespace Interlog.HRTool.Data.Providers
             return entity;
         }
 
-        public bool Delete(int id)
-        {
-            Models.Profile deleteProfile = _dbContext.Profiles.FirstOrDefault(x => x.Id == id);
-            if (deleteProfile != null)
-            {
-                _dbContext.Profiles.Remove(deleteProfile);
-                _dbContext.SaveChanges();
-                return true;
-            }
-            return false;
-        }
-
         public Profile? Update(Profile entity)
         {
             Models.Profile? updateProfile = _dbContext.Profiles.FirstOrDefault(x => x.Id == entity.Id);
 
             if (updateProfile != null)
             {
-                updateProfile.Name = entity.Name; 
+                updateProfile.Name = entity.Name;
                 _dbContext.SaveChanges();
             }
 
             return updateProfile;
 
+        }
+
+        public bool Delete(int id)
+        {
+            Models.Profile deleteProfile = _dbContext.Profiles.Include(x => x.Employees).FirstOrDefault(x => x.Id == id);
+            if (deleteProfile == null || deleteProfile.Employees.Any())
+            {
+                return false;
+            }
+            _dbContext.Profiles.Remove(deleteProfile);
+            _dbContext.SaveChanges();
+            return true;
+            
+        }
+       
+        public bool ProfileExists(int id)
+        {
+            return (_dbContext.Profiles?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

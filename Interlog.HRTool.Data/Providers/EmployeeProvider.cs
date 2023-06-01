@@ -14,7 +14,9 @@ namespace Interlog.HRTool.Data.Providers
 
         public List<Employee> GetAll()
         {
-            return _dbContext.Employees.ToList();
+            return _dbContext.Employees
+                .Include(x => x.Department)
+                .ToList();
         }
 
         public Employee? GetById(int id)

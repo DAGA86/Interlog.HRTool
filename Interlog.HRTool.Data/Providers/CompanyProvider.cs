@@ -21,26 +21,12 @@ namespace Interlog.HRTool.Data.Providers
         {
             return _dbContext.Companies.FirstOrDefault(x => x.Id == id);
         }
-        // ??admin??
+        
         public Company? Create(Company entity)
         {
             _dbContext.Companies.Add(entity);
             _dbContext.SaveChanges();
             return entity;
-        }
-
-        //?????
-        public bool Delete(int id)
-        {
-            Models.Company? deleteCompany = _dbContext.Companies.Include(x => x.Departments).FirstOrDefault(x => x.Id == id);
-            if (deleteCompany == null || deleteCompany.Departments.Any())
-            {
-                return false;
-            }
-
-            _dbContext.Companies.Remove(deleteCompany);
-            _dbContext.SaveChanges();
-            return true;
         }
 
         public Company? Update(Company entity)
@@ -54,6 +40,19 @@ namespace Interlog.HRTool.Data.Providers
 
             return updateCompany;
         }
+
+        public bool Delete(int id)
+        {
+            Models.Company? deleteCompany = _dbContext.Companies.Include(x => x.Departments).FirstOrDefault(x => x.Id == id);
+            if (deleteCompany == null || deleteCompany.Departments.Any())
+            {
+                return false;
+            }
+
+            _dbContext.Companies.Remove(deleteCompany);
+            _dbContext.SaveChanges();
+            return true;
+        }       
 
         public bool CompanyExists(int id)
         {

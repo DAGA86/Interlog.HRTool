@@ -112,44 +112,36 @@ namespace Interlog.HRTool.WebApp.Controllers
             return View(model);
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null || _context.Departments == null)
-        //    {
-        //        return NotFound();
-        //    }
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
+        {
+            Department department = _departmentProvider.GetById(id);
 
-        //    var department = await _context.Departments
-        //        .Include(d => d.Company)
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (department == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (department == null)
+            {
+                return NotFound();
+            }
 
-        //    return View(department);
-        //}
+            return View(department);
+        }
 
-        
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    if (_context.Departments == null)
-        //    {
-        //        return Problem("Entity set 'DatabaseContext.Department'  is null.");
-        //    }
-        //    var department = await _context.Departments.FindAsync(id);
-        //    if (department != null)
-        //    {
-        //        _context.Departments.Remove(department);
-        //    }
 
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            if (!_departmentProvider.Delete(id))
+            {
+                TempData["Error"] = "Não é possivel apagar o departamento";
+            }
+            else
+            {
+                TempData["Success"] = "Departamento apagada com sucesso";
+            }
 
-        
+            return RedirectToAction(nameof(Index));
+        }
+
+
     }
 }

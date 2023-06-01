@@ -3,76 +3,55 @@ using Microsoft.EntityFrameworkCore;
 using Interlog.HRTool.Data.Contexts;
 using Interlog.HRTool.Data.Models;
 using Microsoft.AspNetCore.Authorization;
+using Interlog.HRTool.Data.Providers;
+using Interlog.HRTool.WebApp.Models.Profile;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Interlog.HRTool.WebApp.Controllers
 {
     [Authorize]
-    public class ProfilesController : Controller
+    public class ProfilesController : BaseController
     {
-        private readonly DatabaseContext _context;
-
-        public ProfilesController(DatabaseContext context)
+        private ProfileProvider _profileProvider;
+        
+        public ProfilesController(DatabaseContext context) : base(context)
         {
-            _context = context;
+            _profileProvider = new ProfileProvider(context);   
         }
 
-        // GET: Profiles
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
-              return _context.Profiles != null ? 
-                          View(await _context.Profiles.ToListAsync()) :
-                          Problem("Entity set 'DatabaseContext.Profile'  is null.");
+              return View(_profileProvider.GetAll());
         }
 
-        // GET: Profiles/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null || _context.Profiles == null)
-            {
-                return NotFound();
-            }
-
-            var profile = await _context.Profiles
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (profile == null)
-            {
-                return NotFound();
-            }
-
-            return View(profile);
-        }
-
-        // GET: Profiles/Create
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Profiles/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Profile profile)
+        public async Task<IActionResult> Create(ProfileViewModel model)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(profile);
-                await _context.SaveChangesAsync();
+                Profile profile = new Profile()
+                {
+                    Name = model.Name,
+                };
+
+                _profileProvider.Create(profile);
                 return RedirectToAction(nameof(Index));
             }
-            return View(profile);
+            return View(model);
         }
 
-        // GET: Profiles/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null || _context.Profiles == null)
-            {
-                return NotFound();
-            }
-
-            var profile = await _context.Profiles.FindAsync(id);
+            Profile profile = _profileProvider.GetById(id);
             if (profile == null)
             {
                 return NotFound();
@@ -80,14 +59,11 @@ namespace Interlog.HRTool.WebApp.Controllers
             return View(profile);
         }
 
-        // POST: Profiles/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Profile profile)
+        public async Task<IActionResult> Edit(int id, ProfileViewModel model)
         {
-            if (id != profile.Id)
+            if (id != model.Id)
             {
                 return NotFound();
             }
@@ -96,12 +72,17 @@ namespace Interlog.HRTool.WebApp.Controllers
             {
                 try
                 {
-                    _context.Update(profile);
-                    await _context.SaveChangesAsync();
+                    Profile profile = _profileProvider.GetById(id);
+                    if (profile == null)
+                    {
+                        return NotFound();
+                    }
+                    profile.Name = model.Name;
+                    _profileProvider.Update(profile);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProfileExists(profile.Id))
+                    if (!_profileProvider.ProfileExists(model.Id))
                     {
                         return NotFound();
                     }
@@ -112,49 +93,40 @@ namespace Interlog.HRTool.WebApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(profile);
+            return View(model);
         }
 
-        // GET: Profiles/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null || _context.Profiles == null)
-            {
-                return NotFound();
-            }
+            Profile profile = _profileProvider.GetById(id);
 
-            var profile = await _context.Profiles
-                .FirstOrDefaultAsync(m => m.Id == id);
             if (profile == null)
             {
                 return NotFound();
             }
 
             return View(profile);
+
+            
         }
 
-        // POST: Profiles/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Profiles == null)
+            if (!_profileProvider.Delete(id))
             {
-                return Problem("Entity set 'DatabaseContext.Profile'  is null.");
+                TempData["Error"] = "Não é possivel apagar o profile";
             }
-            var profile = await _context.Profiles.FindAsync(id);
-            if (profile != null)
+            else
             {
-                _context.Profiles.Remove(profile);
+                TempData["Success"] = "Profile apagado com sucesso";
             }
-            
-            await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ProfileExists(int id)
-        {
-          return (_context.Profiles?.Any(e => e.Id == id)).GetValueOrDefault();
-        }
+        
     }
 }

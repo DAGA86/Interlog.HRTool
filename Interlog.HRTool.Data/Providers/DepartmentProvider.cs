@@ -29,18 +29,6 @@ namespace Interlog.HRTool.Data.Providers
             return entity;
         }
 
-        public bool Delete(int id)
-        {
-            Models.Department deleteDepartment = _dbContext.Departments.FirstOrDefault(x => x.Id == id);
-            if (deleteDepartment != null)
-            {
-                _dbContext.Departments.Remove(deleteDepartment);
-                _dbContext.SaveChanges();
-                return true;
-            }
-            return false;
-        }
-
         public Department? Update(Department entity)
         {
             Models.Department? updateDepartment = _dbContext.Departments.FirstOrDefault(x => x.Id == entity.Id);
@@ -56,6 +44,19 @@ namespace Interlog.HRTool.Data.Providers
             return updateDepartment;
 
         }
+
+        public bool Delete(int id)
+        {
+            Models.Department deleteDepartment = _dbContext.Departments.Include(x => x.Employees).FirstOrDefault(x => x.Id == id);
+            if (deleteDepartment == null || deleteDepartment.Employees.Any())
+            {
+                return false;
+            }
+            _dbContext.Departments.Remove(deleteDepartment);
+            _dbContext.SaveChanges();
+            return true;
+        }
+
         public bool DepartmentExists(int id)
         {
             return (_dbContext.Departments?.Any(e => e.Id == id)).GetValueOrDefault();

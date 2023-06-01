@@ -9,6 +9,15 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+@if (TempData["Success"] != null)
+{
+    <div class="text-success">@TempData["Success"]</div>
+}
+else if (TempData["Error"] != null)
+{
+
+    <div class="text-danger">@TempData["Error"]</div>
+}
 <table class="table">
     <thead>
         <tr>

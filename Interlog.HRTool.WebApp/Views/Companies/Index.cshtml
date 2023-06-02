@@ -25,6 +25,9 @@ else if (TempData["Error"] != null)
             <th>
                 @Html.DisplayNameFor(model => model.Name)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Departments)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -33,7 +36,10 @@ else if (TempData["Error"] != null)
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Name)
+                    @item.Name
+                </td>
+                <td>
+                    @item.Departments.Count
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

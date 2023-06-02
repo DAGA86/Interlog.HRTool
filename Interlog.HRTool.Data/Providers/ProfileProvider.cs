@@ -19,7 +19,7 @@ namespace Interlog.HRTool.Data.Providers
 
         public List<Profile> GetAll()
         {
-            return _dbContext.Profiles.ToList();
+            return _dbContext.Profiles.Include(x => x.Employees).ToList();
         }
 
         public Profile? GetById(int id)

@@ -1,11 +1,12 @@
 ﻿@model IEnumerable<Interlog.HRTool.Data.Models.Company>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = Localize("customer.page.create.title");
 }
 
-<h1>Index</h1>
-
+<div>
+    <h3>@Localize("customer.page.create.title")</h3>
+</div>
 <p>
     <a asp-action="Create">Create New</a>
 </p>

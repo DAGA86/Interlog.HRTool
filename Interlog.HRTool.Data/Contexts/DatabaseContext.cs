@@ -36,6 +36,8 @@ namespace Interlog.HRTool.Data.Contexts
         public DbSet<EmployeeProfile> EmployeeProfiles { get; set; }
         public DbSet<Company> Companies { get; set; }
         public DbSet<Department> Departments { get; set; }
+        public DbSet<Translation> Translations { get; set; }
+        public DbSet<Language> Languages { get; set; }
         
     }
 

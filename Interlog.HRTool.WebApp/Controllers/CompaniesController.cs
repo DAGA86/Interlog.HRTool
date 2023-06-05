@@ -5,6 +5,7 @@ using Interlog.HRTool.Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Interlog.HRTool.WebApp.Models.Company;
 using Interlog.HRTool.Data.Providers;
+using Microsoft.CodeAnalysis.Host;
 
 namespace Interlog.HRTool.WebApp.Controllers
 {
@@ -13,7 +14,7 @@ namespace Interlog.HRTool.WebApp.Controllers
     {
         private CompanyProvider _companyProvider;
 
-        public CompaniesController(DatabaseContext context) : base(context)
+        public CompaniesController(DatabaseContext context, LanguageProvider languageProvider, LocalizationProvider localizationProvider) : base(context, languageProvider, localizationProvider)
         {
             _companyProvider = new CompanyProvider(context);
         }
@@ -21,7 +22,7 @@ namespace Interlog.HRTool.WebApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-              return View(_companyProvider.GetAll());
+            return View(_companyProvider.GetAll());
         }
 
         [HttpGet]

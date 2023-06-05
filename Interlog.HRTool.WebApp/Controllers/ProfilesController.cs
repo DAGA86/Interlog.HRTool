@@ -14,7 +14,7 @@ namespace Interlog.HRTool.WebApp.Controllers
     {
         private ProfileProvider _profileProvider;
         
-        public ProfilesController(DatabaseContext context) : base(context)
+        public ProfilesController(DatabaseContext context, LanguageProvider languageProvider, LocalizationProvider localizationProvider) : base(context, languageProvider, localizationProvider)
         {
             _profileProvider = new ProfileProvider(context);   
         }

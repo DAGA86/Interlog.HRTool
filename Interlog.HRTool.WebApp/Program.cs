@@ -1,6 +1,9 @@
+using Interlog.HRTool.Data.Providers;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.CodeAnalysis.Host;
 using Microsoft.EntityFrameworkCore;
-
+using System.Globalization;
 
 namespace Interlog.HRTool.WebApp
 {
@@ -28,10 +31,33 @@ namespace Interlog.HRTool.WebApp
 
             // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
-            builder.Services.AddDbContext<Data.Contexts.DatabaseContext >(options =>
+            builder.Services.AddDbContext<Data.Contexts.DatabaseContext>(options =>
                 options.UseSqlServer(connectionString));
 
-            builder.Services.AddControllersWithViews();
+            builder.Services.AddScoped<LanguageProvider>();
+            builder.Services.AddScoped<LocalizationProvider>();
+
+            builder.Services.AddLocalization();
+
+            builder.Services.AddControllersWithViews()
+                .AddViewLocalization();
+
+            var serviceProvider = builder.Services.BuildServiceProvider();
+            var languageService = serviceProvider.GetRequiredService<LanguageProvider>();
+            var languages = languageService.GetLanguages();
+            var cultures = languages.Select(x => new CultureInfo(x.Culture)).ToArray();
+
+
+            //language default request
+            builder.Services.Configure<RequestLocalizationOptions>(options =>
+            {
+                var englishCulture = cultures.FirstOrDefault(x => x.Name == "en-US");
+                options.DefaultRequestCulture = new RequestCulture(englishCulture?.Name ?? "en-US");
+
+                options.SupportedCultures = cultures;
+                options.SupportedUICultures = cultures;
+            });
+
 
             var app = builder.Build();
 
@@ -50,6 +76,7 @@ namespace Interlog.HRTool.WebApp
 
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseRequestLocalization();
 
             app.MapControllerRoute(
                 name: "default",

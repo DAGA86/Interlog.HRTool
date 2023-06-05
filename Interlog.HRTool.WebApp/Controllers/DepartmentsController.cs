@@ -18,7 +18,7 @@ namespace Interlog.HRTool.WebApp.Controllers
         private CompanyProvider _companyProvider;
         private EmployeeProvider _employeeProvider;
 
-        public DepartmentsController(DatabaseContext context) : base(context)
+        public DepartmentsController(DatabaseContext context, LanguageProvider languageProvider, LocalizationProvider localizationProvider) : base(context, languageProvider, localizationProvider)
         {
             _departmentProvider = new DepartmentProvider(context);
             _companyProvider = new CompanyProvider(context);

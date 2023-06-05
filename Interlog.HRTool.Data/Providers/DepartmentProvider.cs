@@ -14,12 +14,16 @@ namespace Interlog.HRTool.Data.Providers
 
         public List<Department> GetAll()
         {
-            return _dbContext.Departments.Include(x => x.Company).ToList();
+            return _dbContext.Departments
+                .Include(x => x.Company)
+                .ToList();
         }
 
         public Department? GetById(int id)
         {
-            return _dbContext.Departments.FirstOrDefault(x => x.Id == id);
+            return _dbContext.Departments.
+                Include(x => x.Company).
+                FirstOrDefault(x => x.Id == id);
         }
 
         public Department? Create(Department entity)

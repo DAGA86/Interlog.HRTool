@@ -24,7 +24,7 @@ namespace Interlog.HRTool.Data.Providers
         public Translation? GetTranslation(string translationKey, int languageId)
         {
             return _dbContext.Translations.FirstOrDefault(x =>
-                    x.Name.Trim().ToLower() == translationKey.Trim().ToLower()
+                    x.Key.Trim().ToLower() == translationKey.Trim().ToLower()
                     && x.LanguageId == languageId);
         }
     }

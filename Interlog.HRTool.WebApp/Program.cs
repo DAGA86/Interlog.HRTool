@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.CodeAnalysis.Host;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace Interlog.HRTool.WebApp
 {
@@ -42,22 +43,19 @@ namespace Interlog.HRTool.WebApp
             builder.Services.AddControllersWithViews()
                 .AddViewLocalization();
 
-            var serviceProvider = builder.Services.BuildServiceProvider();
-            var languageService = serviceProvider.GetRequiredService<LanguageProvider>();
-            var languages = languageService.GetLanguages();
-            var cultures = languages.Select(x => new CultureInfo(x.Culture)).ToArray();
+            string[] cultures = new string[] { "en-US", "fr-FR", "pt-PT" };
+            var cultureInfos = cultures.Select(x => new CultureInfo(x)).ToArray();
 
 
             //language default request
             builder.Services.Configure<RequestLocalizationOptions>(options =>
             {
-                var englishCulture = cultures.FirstOrDefault(x => x.Name == "en-US");
+                var englishCulture = cultureInfos.FirstOrDefault(x => x.Name == "en-US");
                 options.DefaultRequestCulture = new RequestCulture(englishCulture?.Name ?? "en-US");
 
-                options.SupportedCultures = cultures;
-                options.SupportedUICultures = cultures;
+                options.SupportedCultures = cultureInfos;
+                options.SupportedUICultures = cultureInfos;
             });
-
 
             var app = builder.Build();
 

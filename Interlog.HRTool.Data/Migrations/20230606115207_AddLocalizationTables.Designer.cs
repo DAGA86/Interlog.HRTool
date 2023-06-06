@@ -4,6 +4,7 @@ using Interlog.HRTool.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Interlog.HRTool.Data.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20230606115207_AddLocalizationTables")]
+    partial class AddLocalizationTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,7 +39,7 @@ namespace Interlog.HRTool.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Company", (string)null);
+                    b.ToTable("Company");
                 });
 
             modelBuilder.Entity("Interlog.HRTool.Data.Models.Department", b =>
@@ -60,7 +62,7 @@ namespace Interlog.HRTool.Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Department", (string)null);
+                    b.ToTable("Department");
                 });
 
             modelBuilder.Entity("Interlog.HRTool.Data.Models.Employee", b =>
@@ -106,7 +108,7 @@ namespace Interlog.HRTool.Data.Migrations
 
                     b.HasIndex("DepartmentId");
 
-                    b.ToTable("Employee", (string)null);
+                    b.ToTable("Employee");
                 });
 
             modelBuilder.Entity("Interlog.HRTool.Data.Models.EmployeeProfile", b =>
@@ -121,7 +123,7 @@ namespace Interlog.HRTool.Data.Migrations
 
                     b.HasIndex("ProfileId");
 
-                    b.ToTable("EmployeeProfile", (string)null);
+                    b.ToTable("EmployeeProfile");
                 });
 
             modelBuilder.Entity("Interlog.HRTool.Data.Models.Language", b =>
@@ -142,7 +144,7 @@ namespace Interlog.HRTool.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Language", (string)null);
+                    b.ToTable("Language");
 
                     b.HasData(
                         new
@@ -180,7 +182,7 @@ namespace Interlog.HRTool.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Profile", (string)null);
+                    b.ToTable("Profile");
                 });
 
             modelBuilder.Entity("Interlog.HRTool.Data.Models.Translation", b =>
@@ -199,7 +201,7 @@ namespace Interlog.HRTool.Data.Migrations
 
                     b.HasIndex("LanguageId");
 
-                    b.ToTable("Translation", (string)null);
+                    b.ToTable("Translation");
 
                     b.HasData(
                         new

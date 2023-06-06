@@ -1,60 +1,55 @@
 ﻿@model IEnumerable<Interlog.HRTool.Data.Models.Employee>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = Localize("employee.title.plural");
 }
 
-<h1>Index</h1>
+<h1>@Localize("employee.title.plural")</h1>
 
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.FirstName)
+                @Localize("employee.firstName")
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.LastName)
+                @Localize("employee.lastName")
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Username)
+                @Localize("employee.username")
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Email)
+                @Localize("employee.email")
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Password)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Department)
+                @Localize("employee.department")
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Username)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Password)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Department.Name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> 
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Username)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Department.Name)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">@Localize("general.button.edit")</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

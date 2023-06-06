@@ -1,23 +1,23 @@
 ﻿@model IEnumerable<Interlog.HRTool.Data.Models.Profile>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = Localize("profile.title.plural");
 }
 
-<h1>Index</h1>
+<h1>@Localize("profile.title.plural")</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">@Localize("general.button.createNew")</a>
 </p>
 
 @if (TempData["Success"] != null)
 {
-    <div class="text-success">@TempData["Success"]</div>
+    <div class="text-success">@Localize("profile.delete.successMessage")</div>
 }
 else if (TempData["Error"] != null)
 {
 
-    <div class="text-danger">@TempData["Error"]</div>
+    <div class="text-danger">@Localize("profile.delete.errorMessage")</div>
 }
 
 
@@ -25,28 +25,29 @@ else if (TempData["Error"] != null)
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @Localize("profile.name")
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Employees)
+                @Localize("profile.employeeNumber")
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @item.Name
-            </td>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.Name
+                </td>
                 <td>
                     @item.Employees.Count
                 </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">@Localize("general.button.edit")</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">@Localize("general.button.delete")</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

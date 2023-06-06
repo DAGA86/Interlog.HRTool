@@ -116,11 +116,11 @@ namespace Interlog.HRTool.WebApp.Controllers
         {
             if(!_companyProvider.Delete(id))
             {
-                TempData["Error"] = "Não é possivel apagar a empresa";
+                TempData["Error"] = "";
             }
             else
             {
-                TempData["Success"] = "Empresa apagada com sucesso";
+                TempData["Success"] = "";
             }
 
             return RedirectToAction(nameof(Index));

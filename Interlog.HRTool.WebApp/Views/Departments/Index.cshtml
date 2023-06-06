@@ -1,49 +1,50 @@
 ﻿@model IEnumerable<Interlog.HRTool.Data.Models.Department>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = Localize("department.title.plural");
 }
 
-<h1>Index</h1>
+<h1>@Localize("department.title.plural")</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">@Localize("general.button.createNew")</a>
 </p>
 @if (TempData["Success"] != null)
 {
-    <div class="text-success">@TempData["Success"]</div>
+    <div class="text-success">@Localize("department.delete.successMessage")</div>
 }
 else if (TempData["Error"] != null)
 {
 
-    <div class="text-danger">@TempData["Error"]</div>
+    <div class="text-danger">@Localize("department.delete.ErrorMessage")</div>
 }
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @Localize("department.name")
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Company)
+                @Localize("department.company")
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Company.Name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Company.Name)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">@Localize("general.button.edit")</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">@Localize("general.button.delete")</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

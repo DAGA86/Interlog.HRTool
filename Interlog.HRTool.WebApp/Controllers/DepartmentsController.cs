@@ -132,11 +132,11 @@ namespace Interlog.HRTool.WebApp.Controllers
         {
             if (!_departmentProvider.Delete(id))
             {
-                TempData["Error"] = "Não é possivel apagar o departamento";
+                TempData["Error"] = "";
             }
             else
             {
-                TempData["Success"] = "Departamento apagada com sucesso";
+                TempData["Success"] = "";
             }
 
             return RedirectToAction(nameof(Index));

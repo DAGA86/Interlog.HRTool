@@ -117,11 +117,11 @@ namespace Interlog.HRTool.WebApp.Controllers
         {
             if (!_profileProvider.Delete(id))
             {
-                TempData["Error"] = "Não é possivel apagar o profile";
+                TempData["Error"] = "";
             }
             else
             {
-                TempData["Success"] = "Profile apagado com sucesso";
+                TempData["Success"] = "";
             }
 
             return RedirectToAction(nameof(Index));

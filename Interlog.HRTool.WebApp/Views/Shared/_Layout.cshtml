@@ -34,16 +34,16 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Companies" asp-action="Index">Companies</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Companies" asp-action="Index">@Localize("menu.campany.plural")</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Departments" asp-action="Index">Departments</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Departments" asp-action="Index">@Localize("menu.department.plural")</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Profiles" asp-action="Index">Profiles</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Profiles" asp-action="Index">@Localize("menu.profile.plural")</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Employees" asp-action="Index">Employees</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Employees" asp-action="Index">@Localize("menu.employee.plural")</a>
                         </li>
                         <li class="nav-item">
                             <form asp-action="ChangeLanguage" asp-controller="Home" method="post">

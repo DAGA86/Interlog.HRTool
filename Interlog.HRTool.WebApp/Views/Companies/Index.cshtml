@@ -20,33 +20,72 @@ else if (TempData["Error"] != null)
     <div class="text-danger">@Localize("company.delete.ErrorMessage")</div>
 }
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Localize("company.name")
-            </th>
-            <th>
-                @Localize("company.departmentNumber")
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @item.Name
-                </td>
-                <td>
-                    @item.Departments.Count
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">@Localize("general.button.edit")</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">@Localize("general.button.delete")</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">DataTable with default features</h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <table id="example1" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>@Localize("company.name")</th>
+                            <th>@Localize("company.departmentNumber")</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @item.Name
+                                </td>
+                                <td>
+                                    @item.Departments.Count
+                                </td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.Id">@Localize("general.button.edit")</a> |
+                                    <a asp-action="Delete" asp-route-id="@item.Id">@Localize("general.button.delete")</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>@Localize("company.name")</th>
+                            <th>@Localize("company.departmentNumber")</th>
+                            <th></th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+    <!-- /.col -->
+</div>
+<!-- Page specific script -->
+@section scripts {
+    <!-- DataTables  & Plugins -->
+    <script>
+        let translationJsonFilePath = '@Localize("datatables.translation.jsonfile")';
+    </script>
+    <script src="~/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="~/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="~/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="~/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <script src="~/plugins/jszip/jszip.min.js"></script>
+    <script src="~/plugins/pdfmake/pdfmake.min.js"></script>
+    <script src="~/plugins/pdfmake/vfs_fonts.js"></script>
+    <script src="~/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="~/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="~/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+    <script src="~/dist/js/datatablesTranslation.js"></script>  
+}

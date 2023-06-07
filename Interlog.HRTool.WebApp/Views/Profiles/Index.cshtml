@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = Localize("profile.title.plural");
+    ViewData["TableView"] = true;
 }
 
 <h1>@Localize("profile.title.plural")</h1>
@@ -21,33 +22,61 @@ else if (TempData["Error"] != null)
 }
 
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Localize("profile.name")
-            </th>
-            <th>
-                @Localize("profile.employeeNumber")
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @item.Name
-                </td>
-                <td>
-                    @item.Employees.Count
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">@Localize("general.button.edit")</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">@Localize("general.button.delete")</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">DataTable with default features</h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <table id="example1" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Localize("profile.name")
+                            </th>
+                            <th>
+                                @Localize("profile.employeeNumber")
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @item.Name
+                                </td>
+                                <td>
+                                    @item.Employees.Count
+                                </td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.Id">@Localize("general.button.edit")</a> |
+                                    <a asp-action="Delete" asp-route-id="@item.Id">@Localize("general.button.delete")</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>
+                                @Localize("profile.name")
+                            </th>
+                            <th>
+                                @Localize("profile.employeeNumber")
+                            </th>
+                            <th></th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+    <!-- /.col -->
+</div>
+
+

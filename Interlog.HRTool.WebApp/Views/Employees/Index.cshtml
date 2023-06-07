@@ -2,54 +2,90 @@
 
 @{
     ViewData["Title"] = Localize("employee.title.plural");
+    ViewData["TableView"] = true;
 }
 
 <h1>@Localize("employee.title.plural")</h1>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Localize("employee.firstName")
-            </th>
-            <th>
-                @Localize("employee.lastName")
-            </th>
-            <th>
-                @Localize("employee.username")
-            </th>
-            <th>
-                @Localize("employee.email")
-            </th>
-            <th>
-                @Localize("employee.department")
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FirstName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.LastName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Username)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Email)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Department.Name)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">@Localize("general.button.edit")</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">DataTable with default features</h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <table id="example1" class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Localize("employee.firstName")
+                            </th>
+                            <th>
+                                @Localize("employee.lastName")
+                            </th>
+                            <th>
+                                @Localize("employee.username")
+                            </th>
+                            <th>
+                                @Localize("employee.email")
+                            </th>
+                            <th>
+                                @Localize("employee.department")
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.FirstName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.LastName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Username)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Email)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Department.Name)
+                                </td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-id="@item.Id">@Localize("general.button.edit")</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>
+                                @Localize("employee.firstName")
+                            </th>
+                            <th>
+                                @Localize("employee.lastName")
+                            </th>
+                            <th>
+                                @Localize("employee.username")
+                            </th>
+                            <th>
+                                @Localize("employee.email")
+                            </th>
+                            <th>
+                                @Localize("employee.department")
+                            </th>
+                            <th></th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+    </div>
+    <!-- /.col -->
+</div>

@@ -81,6 +81,7 @@ namespace Interlog.HRTool.Data.Contexts
             builder.Entity<Translation>().HasData(new Translation { Key = "menu.department.plural", Value = "Departments", LanguageId = 1 });
             builder.Entity<Translation>().HasData(new Translation { Key = "menu.profile.plural", Value = "Profiles", LanguageId = 1 });
             builder.Entity<Translation>().HasData(new Translation { Key = "menu.employee.plural", Value = "Employees", LanguageId = 1 });
+            builder.Entity<Translation>().HasData(new Translation { Key = "datatables.translation.jsonfile", Value = "/dist/js/en-GB.json", LanguageId = 1 });
             builder.Entity<Translation>().HasData(new Translation { Key = "company.title.plural", Value = "Entreprises", LanguageId = 2 });
             builder.Entity<Translation>().HasData(new Translation { Key = "company.name", Value = "Nom de l''entreprise", LanguageId = 2 });
             builder.Entity<Translation>().HasData(new Translation { Key = "company.departmentNumber", Value = "Département", LanguageId = 2 });
@@ -125,6 +126,7 @@ namespace Interlog.HRTool.Data.Contexts
             builder.Entity<Translation>().HasData(new Translation { Key = "menu.department.plural", Value = "Départements", LanguageId = 2 });
             builder.Entity<Translation>().HasData(new Translation { Key = "menu.profile.plural", Value = "Profils", LanguageId = 2 });
             builder.Entity<Translation>().HasData(new Translation { Key = "menu.employee.plural", Value = "Employés", LanguageId = 2 });
+            builder.Entity<Translation>().HasData(new Translation { Key = "datatables.translation.jsonfile", Value = "/dist/js/fr-FR.json", LanguageId = 2 });
             builder.Entity<Translation>().HasData(new Translation { Key = "company.title.plural", Value = "Empresas", LanguageId = 3 });
             builder.Entity<Translation>().HasData(new Translation { Key = "company.name", Value = "Nome", LanguageId = 3 });
             builder.Entity<Translation>().HasData(new Translation { Key = "company.departmentNumber", Value = "Departamentos", LanguageId = 3 });
@@ -169,6 +171,7 @@ namespace Interlog.HRTool.Data.Contexts
             builder.Entity<Translation>().HasData(new Translation { Key = "menu.department.plural", Value = "Departamentos", LanguageId = 3 });
             builder.Entity<Translation>().HasData(new Translation { Key = "menu.profile.plural", Value = "Perfis", LanguageId = 3 });
             builder.Entity<Translation>().HasData(new Translation { Key = "menu.employee.plural", Value = "Funcionários", LanguageId = 3 });
+            builder.Entity<Translation>().HasData(new Translation { Key = "datatables.translation.jsonfile", Value = "/dist/js/pt-PT.json", LanguageId = 3 });
 
             // #### END SEED ####
 

@@ -115,6 +115,21 @@ namespace Interlog.HRTool.WebApp.Controllers
             return View(model);
         }
 
+
+        
+        //public JsonResult Delete(int id)
+        //{
+        //    bool result = false;
+        //    var company = _companyProvider.GetById(id);
+        //    if (company != null)
+        //    {
+        //        result = true;
+        //        _companyProvider.Delete(company);
+        //        _companyProvider.SaveChanges();
+        //    }
+        //    return Json(result)
+        //}
+
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
@@ -124,7 +139,7 @@ namespace Interlog.HRTool.WebApp.Controllers
             {
                 return NotFound();
             }
-
+             
             return View(company);
         }
 
@@ -132,7 +147,7 @@ namespace Interlog.HRTool.WebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if(!_companyProvider.Delete(id))
+            if (!_companyProvider.Delete(id))
             {
                 TempData["Error"] = "";
             }

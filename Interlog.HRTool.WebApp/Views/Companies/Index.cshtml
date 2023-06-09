@@ -21,53 +21,111 @@ else if (TempData["Error"] != null)
     <div class="text-danger">@Localize("company.delete.ErrorMessage")</div>
 }
 
-<!--modal-->
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" asp-action="Index">@Localize("general.button.createNew")</button>
+<!--add company-->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addModal" asp-action="Create">@Localize("general.button.createNew")</button>
 
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">@Localize("title.create")</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form asp-action="Index">
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label asp-for="Company.Name" class="control-label">@Localize("company.name")</label>
-                            <input asp-for="Company.Name" class="form-control" />
-                            <span asp-validation-for="Company.Name" class="text-danger"></span>
-                        </div>
-
+            <form asp-action="Create" id="saveForm" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addModalLabel">@Localize("title.create")</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label asp-for="Company.Name" class="control-label">@Localize("company.name")</label>
+                        <input asp-for="Company.Name" class="form-control" />
+                        <span asp-validation-for="Company.Name" class="text-danger"></span>
                     </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">@Localize("general.button.create")</button>
-            </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btnCancel" data-dismiss="modal">Close</button>
+                    <button id="btnSave" type="submit" class="btn btn-primary">@Localize("general.button.create")</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
-<!--end modal-->
-@section Scripts {
-    <script>
-        $('#exampleModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget) // Button that triggered the modal
-            var recipient = button.data('whatever') // Extract info from data-* attributes
-            // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-            var modal = $(this)
-            modal.find('.modal-title').text('New message to ' + recipient)
-            modal.find('.modal-body input').val(recipient)
-        })
-    </script>
-}
 
 
+
+<!--Delete company-->
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form asp-action="Delete" id="saveForm" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">@Localize("title.delete")</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h3>@Localize("delete.confirmMessage")</h3>
+                    <div>
+                        <h4>@Localize("company.title")</h4>
+                        <hr />
+                        <dl class="row">
+                            <dt class="col-sm-2">
+                                @Localize("company.name")
+                            </dt>
+                            <dd class="col-sm-10">
+                                @Html.DisplayFor(model => model.Company.Name)
+                            </dd>
+                        </dl>
+                        <input type="hidden" asp-for="Company.Id" />
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary btnCancel" data-dismiss="modal">Close</button>
+                            <button id="btnDelete" type="submit" class="btn btn-primary">@Localize("general.button.delete")</button>
+                        </div>
+                        <a asp-action="Index">@Localize("general.button.backToList")</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<!--Edit company-->
+
+
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form asp-action="Edit" id="editForm" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">@Localize("title.edit")</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <input class="updateId" type="hidden" asp-for="Company.Id" />
+                        <label asp-for="Company.Name" class="control-label">@Localize("company.name")</label>
+                        <input id="companyName" asp-for="Company.Name" class="form-control" />
+                        <span asp-validation-for="Company.Name" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btnCancel" data-dismiss="modal">Close</button>
+                    <button id="btnSave" type="submit" class="btn btn-primary">@Localize("general.button.save")</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+
+<input type="hidden" id="companyId" />
 
 <div class="row">
     <div class="col-12">
@@ -96,8 +154,10 @@ else if (TempData["Error"] != null)
                                     @item.Departments
                                 </td>
                                 <td>
-                                    <a asp-action="Edit" asp-route-id="@item.Id">@Localize("general.button.edit")</a> |
-                                    <a asp-action="Delete" asp-route-id="@item.Id">@Localize("general.button.delete")</a>
+                                    <a onclick="editForm(@item.Id)" id="editForm" class="btn btn-primary" data-toggle="modal" data-target="#editModal" asp-action="Edit">@Localize("general.button.edit")</a>
+                                    <a id="showModal" class="btn btn-danger" onclick="correct(@item.Id)" data-toggle="modal" data-target="#deleteModal" asp-action="Edit">@Localize("general.button.delete")</a>
+                                    @*<a asp-action="Edit" asp-route-id="@item.Id">@Localize("general.button.edit")</a> |
+                                <a asp-action="Delete" asp-route-id="@item.Id">@Localize("general.button.delete")</a>*@
                                 </td>
                             </tr>
                         }
@@ -117,3 +177,65 @@ else if (TempData["Error"] != null)
     </div>
     <!-- /.col -->
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function)()
+        {
+            //$("#btnSave").click(function () {
+            //    var companyForm = $(#saveForm).serialize();
+
+            //    $.ajax({
+            //        type: "POST",
+            //        url: "/Companies/Create",
+            //        data: companyForm,
+            //        success: function () {
+            //            window.location.href = "/Companies/Index";
+            //        }
+
+            //    })
+            //})
+
+            $("#btnCancel").click(function () {
+                window.location.href = "/Companies/Index"
+            })
+
+            $("#btnDelete").click(function () {
+                var idD = $("companyId").val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Companies/Delete",
+                    data: { id: idD },
+                    success: function (company) {
+                        if (company) {
+                            $("companyId").val(null);
+                            window.location.href = "/Companies/Index";
+                        }
+                        else {
+                            alert("Opps Something Wrong");
+                        }
+                    }
+                })
+            })
+
+            var correct = function (id) {
+                $("companyId").val(id);
+                $("deleteModal").modal('show');
+            }
+
+            var editForm = function (id) {
+                $.ajax({
+                    type: = "POST",
+                    url: "/Companies/Edit",
+                    data: { id: id },
+                    sucess: function (company) {
+                        $("#editModal").modal('show');
+                        $("#companyName").val(Company.Name);
+                        $(".updateId").val(Company.Id),
+                                            }
+                })
+            }
+        }
+    </script>
+}

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Interlog.HRTool.Data.Models.Company>
+﻿@model Interlog.HRTool.WebApp.Models.Company.CompanyIndexViewModel
 
 @{
     ViewData["Title"] = Localize("company.title.plural");
@@ -21,6 +21,53 @@ else if (TempData["Error"] != null)
     <div class="text-danger">@Localize("company.delete.ErrorMessage")</div>
 }
 
+<!--modal-->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" asp-action="Index">@Localize("general.button.createNew")</button>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">@Localize("title.create")</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="Index">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label asp-for="Company.Name" class="control-label">@Localize("company.name")</label>
+                            <input asp-for="Company.Name" class="form-control" />
+                            <span asp-validation-for="Company.Name" class="text-danger"></span>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">@Localize("general.button.create")</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--end modal-->
+@section Scripts {
+    <script>
+        $('#exampleModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var recipient = button.data('whatever') // Extract info from data-* attributes
+            // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+            var modal = $(this)
+            modal.find('.modal-title').text('New message to ' + recipient)
+            modal.find('.modal-body input').val(recipient)
+        })
+    </script>
+}
+
+
 
 <div class="row">
     <div class="col-12">
@@ -39,14 +86,14 @@ else if (TempData["Error"] != null)
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var item in Model)
+                        @foreach (var item in Model.Companies)
                         {
                             <tr>
                                 <td>
                                     @item.Name
                                 </td>
                                 <td>
-                                    @item.Departments.Count
+                                    @item.Departments
                                 </td>
                                 <td>
                                     <a asp-action="Edit" asp-route-id="@item.Id">@Localize("general.button.edit")</a> |

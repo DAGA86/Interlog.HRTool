@@ -8,5 +8,7 @@ namespace Interlog.HRTool.WebApp.Models.Company
         [StringLength(64)]
         public string Name { get; set; }
 
+        public int Departments { get; set; }
+
     }
 }

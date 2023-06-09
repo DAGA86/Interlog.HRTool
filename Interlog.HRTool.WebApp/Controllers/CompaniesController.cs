@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using Interlog.HRTool.WebApp.Models.Company;
 using Interlog.HRTool.Data.Providers;
 using Microsoft.CodeAnalysis.Host;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using System.Xml.Linq;
 
 namespace Interlog.HRTool.WebApp.Controllers
 {
@@ -22,7 +24,23 @@ namespace Interlog.HRTool.WebApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            return View(_companyProvider.GetAll());
+            CompanyIndexViewModel viewModel = new CompanyIndexViewModel();
+
+            viewModel.Company = new CompanyViewModel();
+            viewModel.Companies = new List<CompanyViewModel>();
+
+            var getAllCompanies = _companyProvider.GetAll();
+
+            foreach (var company in getAllCompanies)
+            {
+                viewModel.Companies.Add(new CompanyViewModel()
+                {
+                    Name = company.Name,
+                    Id = company.Id,
+                    Departments = company.Departments.Count
+                });
+            }
+            return View(viewModel);
         }
 
         [HttpGet]

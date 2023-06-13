@@ -14,6 +14,6 @@ namespace Interlog.HRTool.Data.Models
                
 
         public Company Company { get; set; }
-        public ICollection<Employee> Employees { get; set;}
+        public ICollection<Employee> Employees { get; set;} 
     }
 }

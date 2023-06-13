@@ -22,7 +22,25 @@ namespace Interlog.HRTool.WebApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-              return View(_profileProvider.GetAll());
+            ProfileIndexViewModel viewModel = new ProfileIndexViewModel();
+
+            viewModel.Profile = new ProfileViewModel();
+            viewModel.Profiles = new List<ProfileViewModel>();
+
+            var getAllProfiles = _profileProvider.GetAll();
+
+            foreach (var profile in getAllProfiles)
+            {
+                viewModel.Profiles.Add(new ProfileViewModel()
+                {
+                    Name = profile.Name,
+                    Id = profile.Id,
+                    Employees = profile.Employees.Count
+                });
+            }
+
+            return View(viewModel);
+
         }
 
         [HttpGet]
@@ -33,19 +51,20 @@ namespace Interlog.HRTool.WebApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ProfileViewModel model)
+        public async Task<IActionResult> Create(ProfileViewModel profile)
         {
             if (ModelState.IsValid)
             {
-                Profile profile = new Profile()
+                Profile newProfile = new Profile()
                 {
-                    Name = model.Name,
+                    Name = profile.Name,
+                    
                 };
 
-                _profileProvider.Create(profile);
+                _profileProvider.Create(newProfile);
                 return RedirectToAction(nameof(Index));
             }
-            return View(model);
+            return View(profile);
         }
 
         [HttpGet]

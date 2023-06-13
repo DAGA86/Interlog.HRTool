@@ -8,6 +8,7 @@ using Interlog.HRTool.Data.Providers;
 using Interlog.HRTool.WebApp.Models.Employee;
 using Interlog.HRTool.WebApp.Models.Department;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using Interlog.HRTool.WebApp.Models.Company;
 
 namespace Interlog.HRTool.WebApp.Controllers
 {
@@ -29,34 +30,53 @@ namespace Interlog.HRTool.WebApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            return View(_departmentProvider.GetAll());
+            DepartmentIndexViewModel viewModel = new DepartmentIndexViewModel();
+
+            viewModel.Department = new DepartmentViewModel();
+            viewModel.Departments = new List<DepartmentViewModel>();
+
+            var getAllDepartments = _departmentProvider.GetAll();
+
+            foreach (var department in getAllDepartments)
+            {
+                viewModel.Departments.Add(new DepartmentViewModel()
+                {
+                    Name = department.Name,
+                    Id = department.Id,
+                    CompanyId = department.CompanyId,
+                    CompanyName = department.Company.Name
+                }) ;
+            }
+            viewModel.Companies = new SelectList(_companyProvider.GetAll(), nameof(Data.Models.Company.Id), nameof(Data.Models.Company.Name));
+            return View(viewModel);
+           
         }
 
         
         [HttpGet]
         public IActionResult Create()
         {
-            ViewData["CompanyId"] = new SelectList(_companyProvider.GetAll(), nameof(Data.Models.Company.Id), nameof(Data.Models.Company.Name));
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(DepartmentViewModel model)
+        public async Task<IActionResult> Create(DepartmentViewModel department)
         {
             if (ModelState.IsValid)
             {
-                Department department = new Department()
+                Department newDepartment = new Department()
                 {
-                    Name = model.Name,
-                    CompanyId = model.CompanyId
+                    Name = department.Name,
+                    CompanyId = department.CompanyId,
+                    
                 };
-                _departmentProvider.Create(department);
+                _departmentProvider.Create(newDepartment);
                 
                 return RedirectToAction(nameof(Index));
             }
-            ViewData[nameof(DepartmentViewModel.CompanyId)] = new SelectList(_companyProvider.GetAll(), nameof(Data.Models.Company.Id), nameof(Data.Models.Company.Name), model.CompanyId);
-            return View(model);
+            ViewData[nameof(DepartmentViewModel.CompanyId)] = new SelectList(_companyProvider.GetAll(), nameof(Data.Models.Company.Id), nameof(Data.Models.Company.Name), department.CompanyId);
+            return View(department);
         }
 
         [HttpGet]

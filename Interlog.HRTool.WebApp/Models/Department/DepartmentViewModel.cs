@@ -11,5 +11,7 @@ namespace Interlog.HRTool.WebApp.Models.Department
 
         public int CompanyId { get; set; }
 
+        public string? CompanyName { get; set; }
+
     }
 }

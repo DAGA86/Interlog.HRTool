@@ -6,11 +6,12 @@
 }
 
 <div>
-    <h1>@Localize("company.title.plural")</h1>
+    <h1 class="text-center">@Localize("company.title.plural")</h1>
 </div>
-<p>
+@*<p>
     <a asp-action="Create">@Localize("general.button.createNew")</a>
-</p>
+</p>*@
+
 @if (TempData["Success"] != null)
 {
     <div class="text-success">@Localize("company.delete.SuccessMessage")</div>
@@ -22,12 +23,14 @@ else if (TempData["Error"] != null)
 }
 
 <!--add company-->
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addModal" asp-action="Create">@Localize("general.button.createNew")</button>
+<div class="pb-5">
+    <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#addModal" asp-action="Create">@Localize("general.button.createNew")</button>
+</div>
 
 <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form asp-action="Create" id="saveForm" method="post">
+            <form asp-action="Create">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addModalLabel">@Localize("title.create")</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -42,15 +45,15 @@ else if (TempData["Error"] != null)
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btnCancel" data-dismiss="modal">Close</button>
-                    <button id="btnSave" type="submit" class="btn btn-primary">@Localize("general.button.create")</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">@Localize("general.button.create")</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
 
-
+@*
 
 <!--Delete company-->
 
@@ -125,7 +128,7 @@ else if (TempData["Error"] != null)
 </div>
 
 
-<input type="hidden" id="companyId" />
+<input type="hidden" id="companyId" />*@
 
 <div class="row">
     <div class="col-12">
@@ -154,10 +157,10 @@ else if (TempData["Error"] != null)
                                     @item.Departments
                                 </td>
                                 <td>
-                                    <a onclick="editForm(@item.Id)" id="editForm" class="btn btn-primary" data-toggle="modal" data-target="#editModal" asp-action="Edit">@Localize("general.button.edit")</a>
-                                    <a id="showModal" class="btn btn-danger" onclick="correct(@item.Id)" data-toggle="modal" data-target="#deleteModal" asp-action="Edit">@Localize("general.button.delete")</a>
-                                    @*<a asp-action="Edit" asp-route-id="@item.Id">@Localize("general.button.edit")</a> |
-                                <a asp-action="Delete" asp-route-id="@item.Id">@Localize("general.button.delete")</a>*@
+                                    @*<a onclick="javascript:editForm('@item.Id')" id="editForm" class="btn btn-primary" data-toggle="modal" data-target="#editModal" asp-action="Edit">@Localize("general.button.edit")</a>
+                                    <a id="showModal" class="btn btn-danger" onclick="correct(@item.Id)" data-toggle="modal" data-target="#deleteModal" asp-action="Edit">@Localize("general.button.delete")</a>*@
+                                    <a asp-action="Edit" asp-route-id="@item.Id">@Localize("general.button.edit")</a> |
+                                <a asp-action="Delete" asp-route-id="@item.Id">@Localize("general.button.delete")</a>
                                 </td>
                             </tr>
                         }
@@ -178,10 +181,10 @@ else if (TempData["Error"] != null)
     <!-- /.col -->
 </div>
 
-@section Scripts {
+
+@*@section Scripts {
     <script>
-        $(document).ready(function)()
-        {
+        $(document).ready(function () {
             //$("#btnSave").click(function () {
             //    var companyForm = $(#saveForm).serialize();
 
@@ -223,19 +226,20 @@ else if (TempData["Error"] != null)
                 $("companyId").val(id);
                 $("deleteModal").modal('show');
             }
+        });
 
-            var editForm = function (id) {
-                $.ajax({
-                    type: = "POST",
-                    url: "/Companies/Edit",
-                    data: { id: id },
-                    sucess: function (company) {
-                        $("#editModal").modal('show');
-                        $("#companyName").val(Company.Name);
-                        $(".updateId").val(Company.Id),
-                                            }
-                })
-            }
+        function editForm(id) {
+            $.ajax({
+                type: "GET",
+                dataType: 'json',
+                url: "/Companies/Edit",
+                data: { id: id },
+                success: function (result) {
+                    $("#editModal").modal('show');
+                    $("#companyName").val(result.name);
+                    $(".updateId").val(result.id)
+                }
+            });
         }
     </script>
-}
+}*@

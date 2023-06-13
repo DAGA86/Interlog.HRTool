@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Interlog.HRTool.Data.Models.Department>
+﻿@model Interlog.HRTool.WebApp.Models.Department.DepartmentIndexViewModel
 
 @{
     ViewData["Title"] = Localize("department.title.plural");
@@ -19,6 +19,43 @@ else if (TempData["Error"] != null)
 
     <div class="text-danger">@Localize("department.delete.ErrorMessage")</div>
 }
+
+<!--add department-->
+<div class="pb-5">
+    <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#addModal">@Localize("general.button.createNew")</button>
+</div>
+
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form asp-action="Create">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addModalLabel">@Localize("title.create")</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label asp-for="Department.Name" class="control-label">@Localize("department.name")</label>
+                        <input asp-for="Department.Name" class="form-control" />
+                        <span asp-validation-for="Department.Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Department.CompanyId" class="control-label">@Localize("department.company")</label>
+                        <select asp-for="Department.CompanyId" class="form-control" asp-items="Model.Companies"></select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">@Localize("general.button.create")</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
 
 <div class="row">
     <div class="col-12">
@@ -41,14 +78,14 @@ else if (TempData["Error"] != null)
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var item in Model)
+                        @foreach (var item in Model.Departments)
                         {
                             <tr>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Name)
+                                    @item.Name
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Company.Name)
+                                    @item.CompanyName
                                 </td>
                                 <td>
                                     <a asp-action="Edit" asp-route-id="@item.Id">@Localize("general.button.edit")</a> |

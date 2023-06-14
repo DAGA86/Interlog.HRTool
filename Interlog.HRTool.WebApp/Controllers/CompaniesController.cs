@@ -1,13 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Interlog.HRTool.Data.Contexts;
 using Interlog.HRTool.Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Interlog.HRTool.WebApp.Models.Company;
 using Interlog.HRTool.Data.Providers;
-using Microsoft.CodeAnalysis.Host;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-using System.Xml.Linq;
 
 namespace Interlog.HRTool.WebApp.Controllers
 {
@@ -43,12 +39,6 @@ namespace Interlog.HRTool.WebApp.Controllers
             return View(viewModel);
         }
 
-        [HttpGet]
-        public IActionResult Create()
-        {
-            return View();
-        }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CompanyViewModel company)
@@ -63,7 +53,7 @@ namespace Interlog.HRTool.WebApp.Controllers
                 _companyProvider.Create(newCompany);
                 return RedirectToAction(nameof(Index));
             }
-            return View(company);
+            return View(nameof(Index), company);
         }
 
         [HttpGet]
@@ -74,61 +64,37 @@ namespace Interlog.HRTool.WebApp.Controllers
             {
                 return NotFound();
             }
-            return View(company);
+
+            CompanyEditViewModel viewModel = new CompanyEditViewModel();
+            viewModel.Name = company.Name;
+
+            return View(viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, CompanyViewModel model)
+        public async Task<IActionResult> Edit(int id, CompanyEditViewModel model)
         {
             if (id != model.Id)
             {
                 return NotFound();
             }
 
-
             if (ModelState.IsValid)
             {
-                try
+                Company company = _companyProvider.GetById(id);
+                if (company == null)
                 {
-                    Company company = _companyProvider.GetById(id);
-                    if (company == null)
-                    {
-                        return NotFound();
-                    }
-                    company.Name = model.Name;
-                    _companyProvider.Update(company);
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!_companyProvider.CompanyExists(model.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+
+                company.Name = model.Name;
+                _companyProvider.Update(company);
+
                 return RedirectToAction(nameof(Index));
             }
             return View(model);
         }
-
-
-        
-        //public JsonResult Delete(int id)
-        //{
-        //    bool result = false;
-        //    var company = _companyProvider.GetById(id);
-        //    if (company != null)
-        //    {
-        //        result = true;
-        //        _companyProvider.Delete(company);
-        //        _companyProvider.SaveChanges();
-        //    }
-        //    return Json(result)
-        //}
 
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
@@ -139,8 +105,11 @@ namespace Interlog.HRTool.WebApp.Controllers
             {
                 return NotFound();
             }
-             
-            return View(company);
+
+            CompanyDeleteViewModel viewModel = new CompanyDeleteViewModel();
+            viewModel.Name = company.Name;
+
+            return View(viewModel);
         }
 
         [HttpPost, ActionName("Delete")]

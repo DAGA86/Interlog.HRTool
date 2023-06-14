@@ -1,11 +1,12 @@
-﻿@model IEnumerable<Interlog.HRTool.Data.Models.Employee>
+﻿@model IEnumerable<Interlog.HRTool.WebApp.Models.Employee.EmployeeIndexViewModel>
 
 @{
     ViewData["Title"] = Localize("employee.title.plural");
     ViewData["TableView"] = true;
 }
 
-<h1>@Localize("employee.title.plural")</h1>
+<h1 class="text-center pt-3">@Localize("employee.title.plural")</h1>
+<hr class="pb-3"/>
 
 <div class="row">
     <div class="col-12">
@@ -41,19 +42,19 @@
                         {
                             <tr>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.FirstName)
+                                    @item.FirstName
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.LastName)
+                                    @item.LastName
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Username)
+                                    @item.Username
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Email)
+                                    @item.Email
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Department.Name)
+                                    @item.DepartmentName
                                 </td>
                                 <td>
                                     <a asp-action="Edit" asp-route-id="@item.Id">@Localize("general.button.edit")</a>
@@ -83,9 +84,6 @@
                     </tfoot>
                 </table>
             </div>
-            <!-- /.card-body -->
         </div>
-        <!-- /.card -->
     </div>
-    <!-- /.col -->
 </div>

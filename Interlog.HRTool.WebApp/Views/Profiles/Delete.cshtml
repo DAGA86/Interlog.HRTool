@@ -1,27 +1,45 @@
-﻿@model Interlog.HRTool.Data.Models.Profile
+﻿@model Interlog.HRTool.WebApp.Models.Profile.ProfileDeleteViewModel
 
 @{
     ViewData["Title"] = Localize("title.delete");
 }
 
-<h1>@Localize("title.delete")</h1>
+<h1 class="text-center pt-3">@Localize("title.delete")</h1>
+<hr />
 
-<h3>@Localize("delete.confirmMessage")</h3>
+<div class="row justify-content-center">
+    <div class="col-5">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">@Localize("profile.title")</h3>
+            </div>
+            <form asp-action="Delete">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <h3 class="text-center pb-3">@Localize("delete.confirmMessage")</h3>
+                        <dl class="row">
+                            <dt class="col-sm-2">
+                                @Localize("profile.name")
+                            </dt>
+                            <dd class="col-sm-10">
+                                @Html.DisplayFor(model => model.Name)
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="form-group">
+                        <input type="hidden" asp-for="Id" />
+                        <input type="submit" value="@Localize("general.button.delete")" class="btn btn-danger float-right" />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
 <div>
-    <h4>@Localize("profile.title")</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Localize("profile.name")
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="@Localize("general.button.delete")" class="btn btn-danger" /> |
-        <a asp-action="Index">@Localize("general.button.backToList")</a>
-    </form>
+    <a asp-action="Index">@Localize("general.button.backToList")</a>
 </div>

@@ -43,12 +43,6 @@ namespace Interlog.HRTool.WebApp.Controllers
 
         }
 
-        [HttpGet]
-        public IActionResult Create()
-        {
-            return View();
-        }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ProfileViewModel profile)
@@ -75,12 +69,16 @@ namespace Interlog.HRTool.WebApp.Controllers
             {
                 return NotFound();
             }
-            return View(profile);
+
+            ProfileEditViewModel viewModel = new ProfileEditViewModel();
+            viewModel.Name = profile.Name;
+
+            return View(viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, ProfileViewModel model)
+        public async Task<IActionResult> Edit(int id, ProfileEditViewModel model)
         {
             if (id != model.Id)
             {
@@ -89,27 +87,14 @@ namespace Interlog.HRTool.WebApp.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    Profile profile = _profileProvider.GetById(id);
+               Profile profile = _profileProvider.GetById(id);
                     if (profile == null)
                     {
                         return NotFound();
                     }
                     profile.Name = model.Name;
                     _profileProvider.Update(profile);
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!_profileProvider.ProfileExists(model.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                               
                 return RedirectToAction(nameof(Index));
             }
             return View(model);
@@ -125,7 +110,10 @@ namespace Interlog.HRTool.WebApp.Controllers
                 return NotFound();
             }
 
-            return View(profile);
+            ProfileDeleteViewModel viewModel = new ProfileDeleteViewModel();
+            viewModel.Name = profile.Name;
+
+            return View(viewModel);
 
             
         }

@@ -5,11 +5,9 @@
     ViewData["TableView"] = true;
 }
 
-<h1>@Localize("profile.title.plural")</h1>
+<h1 class="text-center pt-3">@Localize("profile.title.plural")</h1>
+<hr />
 
-@*<p>
-    <a asp-action="Create">@Localize("general.button.createNew")</a>
-</p>*@
 
 @if (TempData["Success"] != null)
 {
@@ -52,14 +50,13 @@ else if (TempData["Error"] != null)
     </div>
 </div>
 
-
+<!--DataTable-->
 <div class="row">
     <div class="col-12">
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">DataTable with default features</h3>
             </div>
-            <!-- /.card-header -->
             <div class="card-body">
                 <table id="example1" class="table table-bordered table-striped">
                     <thead>
@@ -103,11 +100,8 @@ else if (TempData["Error"] != null)
                     </tfoot>
                 </table>
             </div>
-            <!-- /.card-body -->
         </div>
-        <!-- /.card -->
     </div>
-    <!-- /.col -->
 </div>
 
 

@@ -31,7 +31,23 @@ namespace Interlog.HRTool.WebApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            return View(_employeeProvider.GetAll());
+            List<EmployeeIndexViewModel> viewModel = new List<EmployeeIndexViewModel>();
+            var getAllEmployees = _employeeProvider.GetAll();
+
+            foreach (var employee in getAllEmployees)
+            {
+                viewModel.Add(new EmployeeIndexViewModel()
+                {
+                    Id = employee.Id,
+                    FirstName = employee.FirstName,
+                    LastName = employee.LastName,
+                    Username = employee.Username,
+                    Email = employee.Email,
+                    DepartmentName = employee.Department.Name
+                });
+            }
+
+            return View(viewModel);
         }
 
         public ActionResult Login()
@@ -128,16 +144,17 @@ namespace Interlog.HRTool.WebApp.Controllers
             {
                 return NotFound();
             }
-            EmployeeViewModel model = new EmployeeViewModel(employee.Id, employee.FirstName, employee.LastName, employee.DepartmentId);
-            ViewData[nameof(EmployeeViewModel.DepartmentId)] = new SelectList(_departmentProvider.GetAll(), nameof(Data.Models.Department.Id), nameof(Data.Models.Department.Name), employee.DepartmentId);
-            ViewData[nameof(EmployeeViewModel.ProfileIds)] = new MultiSelectList(_profileProvider.GetAll(), nameof(Data.Models.Profile.Id), nameof(Data.Models.Profile.Name), employee.Profiles.Select(x => x.Id));
-            return View(model);
+
+            EmployeeEditViewModel viewModel = new EmployeeEditViewModel(employee.Id, employee.FirstName, employee.LastName, employee.DepartmentId);
+            viewModel.Department = new SelectList(_departmentProvider.GetAll(), nameof(Data.Models.Department.Id), nameof(Data.Models.Department.Name), employee.DepartmentId);
+            viewModel.Profiles = new MultiSelectList(_profileProvider.GetAll(), nameof(Data.Models.Profile.Id), nameof(Data.Models.Profile.Name), employee.Profiles.Select(x => x.Id));
+            return View(viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<IActionResult> Edit(int id, EmployeeViewModel model)
+        public async Task<IActionResult> Edit(int id, EmployeeEditViewModel model)
         {
             if (id != model.Id)
             {
@@ -146,8 +163,6 @@ namespace Interlog.HRTool.WebApp.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
                     Employee employee = _employeeProvider.GetById(id);
                     if (employee == null)
                     {
@@ -157,23 +172,10 @@ namespace Interlog.HRTool.WebApp.Controllers
                     _employeeProvider.Update(employee);
                     _employeeProvider.UpdateProfiles(model.Id, model.ProfileIds);
 
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-
-                    if (!_employeeProvider.EmployeeExists(model.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData[nameof(EmployeeViewModel.DepartmentId)] = new SelectList(_departmentProvider.GetAll(), nameof(Data.Models.Department.Id), nameof(Data.Models.Department.Name), model.DepartmentId);
-            ViewData[nameof(EmployeeViewModel.ProfileIds)] = new MultiSelectList(_profileProvider.GetAll(), nameof(Data.Models.Profile.Id), nameof(Data.Models.Profile.Name), model.ProfileIds);
+            model.Department = new SelectList(_departmentProvider.GetAll(), nameof(Data.Models.Department.Id), nameof(Data.Models.Department.Name), model.DepartmentId);
+            model.Profiles = new MultiSelectList(_profileProvider.GetAll(), nameof(Data.Models.Profile.Id), nameof(Data.Models.Profile.Name), model.ProfileIds);
             return View(model);
         }
     }

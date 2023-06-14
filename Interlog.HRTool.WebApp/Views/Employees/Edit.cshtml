@@ -1,39 +1,50 @@
-﻿@model Interlog.HRTool.WebApp.Models.Employee.EmployeeViewModel
+﻿@model Interlog.HRTool.WebApp.Models.Employee.EmployeeEditViewModel
 
 @{
     ViewData["Title"] = Localize("title.edit");
 }
 
-<h1>@Localize("title.edit")</h1>
-
-<h4>@Localize("employee.title")</h4>
+<h1 class="text-center pt-3">@Localize("title.edit")</h1>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="FirstName" class="control-label">@Localize("employee.firstName"): </label>
-                <label class="control-label">@Model.FirstName</label>
-                <span asp-validation-for="FirstName" class="text-danger"></span>
+
+<div class="row justify-content-center">
+    <div class="col-5">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">@Localize("employee.title")</h3>
             </div>
-            <div class="form-group">
-                <label asp-for="LastName" class="control-label">@Localize("employee.lastName"): </label>
-                <label class="control-label">@Model.LastName</label>
-                <span asp-validation-for="LastName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DepartmentId" class="control-label">@Localize("employee.department")</label>
-                <select asp-for="DepartmentId" class="form-control" asp-items="ViewBag.DepartmentId"></select>
-                <label asp-for="ProfileIds" class="control-label">@Localize("employee.profile")</label>
-                <select multiple="multiple" asp-for="ProfileIds" class="form-control" asp-items="ViewBag.ProfileIds"></select>
-                <span asp-validation-for="DepartmentId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="@Localize("general.button.save")" class="btn btn-primary" />
-            </div>
-        </form>
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />
+                <div class="card-body">
+                    <div class="form-group">
+                        <label asp-for="FirstName" class="control-label">@Localize("employee.firstName"): </label>
+                        <label class="control-label">@Model.FirstName</label>
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="LastName" class="control-label">@Localize("employee.lastName"): </label>
+                        <label class="control-label">@Model.LastName</label>
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="DepartmentId" class="control-label">@Localize("department.company")</label>
+                        <select asp-for="DepartmentId" class="form-control" asp-items="Model.Department"></select>
+                        <span asp-validation-for="DepartmentId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">                        
+                        <label asp-for="ProfileIds" class="control-label">@Localize("employee.profile")</label>
+                        <select multiple="multiple" asp-for="ProfileIds" class="form-control" asp-items="Model.Profiles"></select>
+                        <span asp-validation-for="ProfileIds" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="form-group">
+                        <input type="submit" value="@Localize("general.button.save")" class="btn btn-primary float-right" />
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
@@ -42,5 +53,8 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    }
+

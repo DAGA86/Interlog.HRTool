@@ -1,14 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using Interlog.HRTool.Data.Contexts;
 using Interlog.HRTool.Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Interlog.HRTool.Data.Providers;
-using Interlog.HRTool.WebApp.Models.Employee;
 using Interlog.HRTool.WebApp.Models.Department;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-using Interlog.HRTool.WebApp.Models.Company;
 
 namespace Interlog.HRTool.WebApp.Controllers
 {
@@ -45,18 +41,11 @@ namespace Interlog.HRTool.WebApp.Controllers
                     Id = department.Id,
                     CompanyId = department.CompanyId,
                     CompanyName = department.Company.Name
-                }) ;
+                });
             }
             viewModel.Companies = new SelectList(_companyProvider.GetAll(), nameof(Data.Models.Company.Id), nameof(Data.Models.Company.Name));
             return View(viewModel);
-           
-        }
 
-        
-        [HttpGet]
-        public IActionResult Create()
-        {
-            return View();
         }
 
         [HttpPost]
@@ -69,14 +58,15 @@ namespace Interlog.HRTool.WebApp.Controllers
                 {
                     Name = department.Name,
                     CompanyId = department.CompanyId,
-                    
+
                 };
+
                 _departmentProvider.Create(newDepartment);
-                
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData[nameof(DepartmentViewModel.CompanyId)] = new SelectList(_companyProvider.GetAll(), nameof(Data.Models.Company.Id), nameof(Data.Models.Company.Name), department.CompanyId);
-            return View(department);
+            department.Companies = new SelectList(_companyProvider.GetAll(), nameof(Data.Models.Company.Id), nameof(Data.Models.Company.Name), department.CompanyId);
+            return View(nameof(Index), department);
         }
 
         [HttpGet]
@@ -86,14 +76,19 @@ namespace Interlog.HRTool.WebApp.Controllers
             if (department == null)
             {
                 return NotFound();
-            }            
-            ViewData[nameof(DepartmentViewModel.CompanyId)] = new SelectList(_companyProvider.GetAll(), nameof(Data.Models.Company.Id), nameof(Data.Models.Company.Name), department.CompanyId);
-            return View(department);
+            }
+
+            DepartmentEditViewModel viewModel = new DepartmentEditViewModel();
+            viewModel.CompanyId = department.Id;
+            viewModel.Name = department.Name;
+
+            viewModel.Companies = new SelectList(_companyProvider.GetAll(), nameof(Data.Models.Company.Id), nameof(Data.Models.Company.Name), department.CompanyId);
+            return View(viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, DepartmentViewModel model)
+        public async Task<IActionResult> Edit(int id, DepartmentEditViewModel model)
         {
             if (id != model.Id)
             {
@@ -102,33 +97,19 @@ namespace Interlog.HRTool.WebApp.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    Department department = _departmentProvider.GetById(id);
+                Department department = _departmentProvider.GetById(id);
 
-                    if (department == null)
-                    {
-                        return NotFound();
-                    }
-                    department.CompanyId = model.CompanyId;
-                    department.Name = model.Name;
-                    _departmentProvider.Update(department);
-                                        
-                }
-                catch (DbUpdateConcurrencyException)
+                if (department == null)
                 {
-                    if (!_departmentProvider.DepartmentExists(model.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    return NotFound();
                 }
+                department.CompanyId = model.CompanyId;
+                department.Name = model.Name;
+                _departmentProvider.Update(department);
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData[nameof(DepartmentViewModel.CompanyId)] = new SelectList(_companyProvider.GetAll(), nameof(Data.Models.Company.Id), nameof(Data.Models.Company.Name), model.CompanyId);
+            model.Companies = new SelectList(_companyProvider.GetAll(), nameof(Data.Models.Company.Id), nameof(Data.Models.Company.Name), model.CompanyId);
             return View(model);
         }
 
@@ -142,7 +123,12 @@ namespace Interlog.HRTool.WebApp.Controllers
                 return NotFound();
             }
 
-            return View(department);
+            DepartmentDeleteViewModel viewModel = new DepartmentDeleteViewModel();
+            viewModel.Name = department.Name;
+            viewModel.CompanyName = department.Company.Name;
+
+            viewModel.Companies = new SelectList(_companyProvider.GetAll(), nameof(Data.Models.Company.Id), nameof(Data.Models.Company.Name), viewModel.CompanyId);
+            return View(viewModel);
         }
 
 

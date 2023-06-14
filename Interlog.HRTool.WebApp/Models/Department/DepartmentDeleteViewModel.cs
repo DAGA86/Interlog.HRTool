@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Interlog.HRTool.WebApp.Models.Department
 {
-    public class DepartmentViewModel
+    public class DepartmentDeleteViewModel
     {
         public int Id { get; set; }
 
@@ -12,10 +12,8 @@ namespace Interlog.HRTool.WebApp.Models.Department
 
         public int CompanyId { get; set; }
 
-        public string? CompanyName { get; set; }
-
         public SelectList? Companies { get; set; }
 
-
+        public string CompanyName { get; set; }
     }
 }

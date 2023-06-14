@@ -1,15 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.ComponentModel.DataAnnotations;
 
 namespace Interlog.HRTool.WebApp.Models.Employee
 {
-    public class EmployeeViewModel
+    public class EmployeeEditViewModel
     {
-        public EmployeeViewModel()
+        public EmployeeEditViewModel()
         {
 
         }
 
-        public EmployeeViewModel(int id, string firstName, string lastName, int departmentId) {
+        public EmployeeEditViewModel(int id, string firstName, string lastName, int departmentId)
+        {
             this.Id = id;
             this.FirstName = firstName;
             this.LastName = lastName;
@@ -22,5 +24,8 @@ namespace Interlog.HRTool.WebApp.Models.Employee
 
         public int DepartmentId { get; set; }
         public int[] ProfileIds { get; set; }
+
+        public SelectList? Department { get; set; }
+        public MultiSelectList? Profiles { get; set; }
     }
 }

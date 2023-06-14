@@ -5,11 +5,9 @@
     ViewData["TableView"] = true;
 }
 
-<h1>@Localize("department.title.plural")</h1>
+<h1 class="text-center pt-3">@Localize("department.title.plural")</h1>
+<hr />
 
-<p>
-    <a asp-action="Create">@Localize("general.button.createNew")</a>
-</p>
 @if (TempData["Success"] != null)
 {
     <div class="text-success">@Localize("department.delete.successMessage")</div>
@@ -29,6 +27,7 @@ else if (TempData["Error"] != null)
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="modal-header">
                     <h5 class="modal-title" id="addModalLabel">@Localize("title.create")</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -55,15 +54,13 @@ else if (TempData["Error"] != null)
     </div>
 </div>
 
-
-
+<!--DataTable-->
 <div class="row">
     <div class="col-12">
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">DataTable with default features</h3>
             </div>
-            <!-- /.card-header -->
             <div class="card-body">
                 <table id="example1" class="table table-bordered table-striped">
                     <thead>
@@ -107,9 +104,6 @@ else if (TempData["Error"] != null)
                     </tfoot>
                 </table>
             </div>
-            <!-- /.card-body -->
         </div>
-        <!-- /.card -->
     </div>
-    <!-- /.col -->
 </div>

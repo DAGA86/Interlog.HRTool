@@ -5,12 +5,9 @@
     ViewData["TableView"] = true;
 }
 
-<div>
-    <h1 class="text-center">@Localize("company.title.plural")</h1>
-</div>
-@*<p>
-    <a asp-action="Create">@Localize("general.button.createNew")</a>
-</p>*@
+
+<h1 class="text-center pt-3">@Localize("company.title.plural")</h1>
+<hr />
 
 @if (TempData["Success"] != null)
 {
@@ -31,6 +28,7 @@ else if (TempData["Error"] != null)
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <form asp-action="Create">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="modal-header">
                     <h5 class="modal-title" id="addModalLabel">@Localize("title.create")</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -53,90 +51,13 @@ else if (TempData["Error"] != null)
     </div>
 </div>
 
-@*
-
-<!--Delete company-->
-
-<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <form asp-action="Delete" id="saveForm" method="post">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteModalLabel">@Localize("title.delete")</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <h3>@Localize("delete.confirmMessage")</h3>
-                    <div>
-                        <h4>@Localize("company.title")</h4>
-                        <hr />
-                        <dl class="row">
-                            <dt class="col-sm-2">
-                                @Localize("company.name")
-                            </dt>
-                            <dd class="col-sm-10">
-                                @Html.DisplayFor(model => model.Company.Name)
-                            </dd>
-                        </dl>
-                        <input type="hidden" asp-for="Company.Id" />
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary btnCancel" data-dismiss="modal">Close</button>
-                            <button id="btnDelete" type="submit" class="btn btn-primary">@Localize("general.button.delete")</button>
-                        </div>
-                        <a asp-action="Index">@Localize("general.button.backToList")</a>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
-
-
-<!--Edit company-->
-
-
-<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <form asp-action="Edit" id="editForm" method="post">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel">@Localize("title.edit")</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                        <input class="updateId" type="hidden" asp-for="Company.Id" />
-                        <label asp-for="Company.Name" class="control-label">@Localize("company.name")</label>
-                        <input id="companyName" asp-for="Company.Name" class="form-control" />
-                        <span asp-validation-for="Company.Name" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary btnCancel" data-dismiss="modal">Close</button>
-                    <button id="btnSave" type="submit" class="btn btn-primary">@Localize("general.button.save")</button>
-                </div>
-            </form>
-
-        </div>
-    </div>
-</div>
-
-
-<input type="hidden" id="companyId" />*@
-
+<!--DataTable-->
 <div class="row">
     <div class="col-12">
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">DataTable with default features</h3>
             </div>
-            <!-- /.card-header -->
             <div class="card-body">
                 <table id="example1" class="table table-bordered table-striped">
                     <thead>
@@ -157,10 +78,8 @@ else if (TempData["Error"] != null)
                                     @item.Departments
                                 </td>
                                 <td>
-                                    @*<a onclick="javascript:editForm('@item.Id')" id="editForm" class="btn btn-primary" data-toggle="modal" data-target="#editModal" asp-action="Edit">@Localize("general.button.edit")</a>
-                                    <a id="showModal" class="btn btn-danger" onclick="correct(@item.Id)" data-toggle="modal" data-target="#deleteModal" asp-action="Edit">@Localize("general.button.delete")</a>*@
                                     <a asp-action="Edit" asp-route-id="@item.Id">@Localize("general.button.edit")</a> |
-                                <a asp-action="Delete" asp-route-id="@item.Id">@Localize("general.button.delete")</a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id">@Localize("general.button.delete")</a>
                                 </td>
                             </tr>
                         }
@@ -174,72 +93,6 @@ else if (TempData["Error"] != null)
                     </tfoot>
                 </table>
             </div>
-            <!-- /.card-body -->
         </div>
-        <!-- /.card -->
     </div>
-    <!-- /.col -->
 </div>
-
-
-@*@section Scripts {
-    <script>
-        $(document).ready(function () {
-            //$("#btnSave").click(function () {
-            //    var companyForm = $(#saveForm).serialize();
-
-            //    $.ajax({
-            //        type: "POST",
-            //        url: "/Companies/Create",
-            //        data: companyForm,
-            //        success: function () {
-            //            window.location.href = "/Companies/Index";
-            //        }
-
-            //    })
-            //})
-
-            $("#btnCancel").click(function () {
-                window.location.href = "/Companies/Index"
-            })
-
-            $("#btnDelete").click(function () {
-                var idD = $("companyId").val();
-
-                $.ajax({
-                    type: "POST",
-                    url: "/Companies/Delete",
-                    data: { id: idD },
-                    success: function (company) {
-                        if (company) {
-                            $("companyId").val(null);
-                            window.location.href = "/Companies/Index";
-                        }
-                        else {
-                            alert("Opps Something Wrong");
-                        }
-                    }
-                })
-            })
-
-            var correct = function (id) {
-                $("companyId").val(id);
-                $("deleteModal").modal('show');
-            }
-        });
-
-        function editForm(id) {
-            $.ajax({
-                type: "GET",
-                dataType: 'json',
-                url: "/Companies/Edit",
-                data: { id: id },
-                success: function (result) {
-                    $("#editModal").modal('show');
-                    $("#companyName").val(result.name);
-                    $(".updateId").val(result.id)
-                }
-            });
-        }
-    </script>
-}*@

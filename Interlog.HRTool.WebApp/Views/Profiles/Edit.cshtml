@@ -1,27 +1,35 @@
-﻿@model Interlog.HRTool.Data.Models.Profile
+﻿@model Interlog.HRTool.WebApp.Models.Profile.ProfileEditViewModel
 
 @{
     ViewData["Title"] = Localize("title.edit");
 }
 
-<h1>@Localize("title.edit")</h1>
-
-<h4>@Localize("profile.title")</h4>
+<h1 class="text-center pt-3">@Localize("title.edit")</h1>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Name" class="control-label">@Localize("profile.name")</label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+
+<div class="row justify-content-center">
+    <div class="col-5">
+        <div class="card card-primary">
+            <div class="card-header">
+                <h3 class="card-title">@Localize("profile.title")</h3>
             </div>
-            <div class="form-group">
-                <input type="submit" value="@Localize("general.button.save")" class="btn btn-primary" />
-            </div>
-        </form>
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Id" />
+                <div class="card-body">
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label">@Localize("profile.name")</label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="form-group">
+                        <input type="submit" value="@Localize("general.button.save")" class="btn btn-primary float-right" />
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
